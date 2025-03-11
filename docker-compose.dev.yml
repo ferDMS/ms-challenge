@@ -1,0 +1,41 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.backend
+    image: ms-challenge-backend-dev:latest
+    pull_policy: build # This ensures it builds if not present
+    ports:
+      - "5001:5001"
+    volumes:
+      - ./app/backend:/app
+      - ./app/services:/app/services
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=1
+    command: flask run --host=0.0.0.0 --port=5001
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend.dev
+    image: ms-challenge-frontend-dev:latest
+    pull_policy: build # This ensures it builds if not present
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./app/frontend:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5001
+    command: npm run dev
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

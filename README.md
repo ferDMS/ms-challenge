@@ -31,23 +31,34 @@ This solution creates a ChatGPT-like frontend experience over your own documents
 
 ## Running the Application
 
-### Local Development
+This application is designed to run in containers for maximum portability and ease of deployment.
 
-Start the application:
+You can also use Docker commands directly:
 
-**macOS/Linux:**
-
-```shell
-./scripts/start.sh
-```
-
-**Windows:**
+**Production Mode:**
 
 ```shell
-./scripts/start.ps1
+# Build and start containers
+docker-compose up --build
 ```
 
-Once running, access the application at http://localhost:50505
+**Development Mode (with hot-reloading):**
+
+```shell
+# Build and start development containers
+docker-compose -f docker-compose.dev.yml up --build
+```
+
+Once running, access the application at http://localhost:3000
+
+### Container Architecture
+
+The application consists of two main containers:
+
+- **Frontend**: Next.js React application serving the UI
+- **Backend**: Flask API providing access to Azure services
+
+All dependencies are managed within the containers, eliminating the need for local environment setup beyond Docker itself.
 
 ## Core Azure Services
 

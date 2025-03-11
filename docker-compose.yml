@@ -1,0 +1,33 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.backend
+    image: ms-challenge-backend:latest
+    pull_policy: build # This ensures it builds if not present
+    ports:
+      - "5001:5001"
+    environment:
+      - FLASK_APP=app.py
+      - FLASK_DEBUG=0
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend
+    image: ms-challenge-frontend:latest
+    pull_policy: build # This ensures it builds if not present
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      - NEXT_PUBLIC_API_URL=http://localhost:5001
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
