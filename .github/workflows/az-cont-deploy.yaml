@@ -1,0 +1,94 @@
+on: [push]
+name: Azure_Container_Deployment
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # checkout the repo
+      - name: "Checkout GitHub Action"
+        uses: actions/checkout@main
+
+      - name: "Login via Azure CLI"
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: "Login to Azure Container Registry"
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+          username: ${{ secrets.REGISTRY_USERNAME }}
+          password: ${{ secrets.REGISTRY_PASSWORD }}
+
+      # Build and push the backend image
+      - name: "Build and push backend image"
+        run: |
+          docker build -f docker/Dockerfile.backend -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }} .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }}
+
+      # Build and push the frontend image
+      - name: "Build and push frontend image"
+        run: |
+          docker build -f docker/Dockerfile.frontend -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }} .
+          docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }}
+
+      # Generate ACI container group YAML definition
+      - name: "Generate ACI container group definition"
+        run: |
+          cat > container-group.yaml << EOL
+          apiVersion: 2019-12-01
+          location: westus
+          name: ms-challenge-${{ github.run_number }}
+          properties:
+            containers:
+            - name: backend
+              properties:
+                image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }}
+                ports:
+                - port: 5001
+                environmentVariables:
+                - name: FLASK_APP
+                  value: app.py
+                - name: FLASK_DEBUG
+                  value: '0'
+                resources:
+                  requests:
+                    cpu: 1
+                    memoryInGB: 1.5
+            - name: frontend
+              properties:
+                image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }}
+                ports:
+                - port: 3000
+                environmentVariables:
+                - name: NEXT_PUBLIC_API_URL
+                  value: http://localhost:5001
+                resources:
+                  requests:
+                    cpu: 1
+                    memoryInGB: 1.5
+            osType: Linux
+            ipAddress:
+              type: Public
+              ports:
+              - port: 5001
+              - port: 3000
+              dnsNameLabel: ms-challenge-${{ github.run_number }}
+            imageRegistryCredentials:
+            - server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+              username: ${{ secrets.REGISTRY_USERNAME }}
+              password: ${{ secrets.REGISTRY_PASSWORD }}
+          tags: null
+          type: Microsoft.ContainerInstance/containerGroups
+          EOL
+
+      # Deploy to Azure Container Instances
+      - name: "Deploy to Azure Container Instances"
+        run: |
+          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file container-group.yaml
+
+      # Output the URL of the deployed application
+      - name: "Show Application URL"
+        run: |
+          echo "Application URL: http://ms-challenge-${{ github.run_number }}.westus.azurecontainer.io:3000"
