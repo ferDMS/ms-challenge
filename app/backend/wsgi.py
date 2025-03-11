@@ -1,9 +1,8 @@
 import sys
 import os
 
-# Add the parent directory to the Python path
-parent_dir = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-sys.path.insert(0, parent_dir)
+# Add the app directory to the Python path
+sys.path.insert(0, os.path.dirname(__file__))
 
 # Import the Flask app from your backend
 from app import app

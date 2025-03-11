@@ -16,6 +16,8 @@ echo "Restoring backend python packages"
 echo ""
 
 ./.venv/bin/python -m pip install -r app/backend/requirements.txt
+# Ensure gunicorn is installed for production
+./.venv/bin/python -m pip install gunicorn
 out=$?
 if [ $out -ne 0 ]; then
   echo "Failed to restore backend python packages"
@@ -35,29 +37,41 @@ if [ $out -ne 0 ]; then
 fi
 
 echo ""
-echo "Starting backend and frontend in development mode"
+echo "Building frontend for production"
 echo ""
 
-# Start backend in background
-cd ../backend
-port=5001
-host=localhost
+npm run build
+out=$?
+if [ $out -ne 0 ]; then
+  echo "Failed to build frontend"
+  exit $out
+fi
 
-# Function to clean up backend process on exit
+echo ""
+echo "Starting backend and frontend in production mode"
+echo ""
+
+# Function to clean up processes on exit
 cleanup() {
   echo "Cleaning up processes..."
   [ -n "$backend_pid" ] && kill $backend_pid
+  [ -n "$frontend_pid" ] && kill $frontend_pid
   exit $1
 }
 
 # Set up trap to ensure cleanup on script termination
 trap 'cleanup $?' INT TERM EXIT
 
+# Start the backend using Gunicorn in the background
+cd ../backend
+port=5001
+host=0.0.0.0  # Use 0.0.0.0 for production to listen on all interfaces
+
 # Activate the virtual environment before starting the backend
 source ../../.venv/bin/activate
 
-# Start the Flask server in the background
-flask run --port "$port" --host "$host" --debug &
+# Start gunicorn with the wsgi entry point
+gunicorn --bind "$host:$port" wsgi:app &
 backend_pid=$!
 
 # Make sure the backend started successfully
@@ -68,14 +82,20 @@ if ! ps -p $backend_pid > /dev/null; then
 fi
 echo "Backend server running on http://$host:$port (PID: $backend_pid)"
 
-# Go back to frontend and start dev server
+# Go back to frontend and serve the built files
 cd ../frontend
-echo "Starting frontend development server..."
-npm run dev
-frontend_out=$?
+echo "Starting frontend production server..."
+npx next start -p 3000 &
+frontend_pid=$!
 
-# The trap will handle cleanup when we exit
-if [ $frontend_out -ne 0 ]; then
-  echo "Frontend development server exited with error"
-  exit $frontend_out
+# Make sure the frontend server started successfully
+sleep 2
+if ! ps -p $frontend_pid > /dev/null; then
+  echo "Failed to start frontend server"
+  exit 1
 fi
+echo "Frontend server running on http://localhost:3000 (PID: $frontend_pid)"
+
+# Keep the script running to maintain both servers
+echo "Press Ctrl+C to stop the servers"
+wait
