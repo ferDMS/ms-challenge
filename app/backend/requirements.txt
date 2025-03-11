@@ -1,0 +1,9 @@
+flask
+gunicorn
+werkzeug
+flask-cors
+azure-cognitiveservices-speech
+azure-ai-documentintelligence
+openai
+python-dotenv
+# Add any other dependencies your project needs
