@@ -1,4 +1,8 @@
-on: [push]
+on:
+  push:
+    branches:
+      - main
+
 name: Azure_Container_Deployment
 
 jobs:
@@ -38,7 +42,7 @@ jobs:
         run: |
           cat > container-group.yaml << EOL
           apiVersion: 2019-12-01
-          location: westus
+          location: canadacentral
           name: ms-challenge-${{ github.run_number }}
           properties:
             containers:
@@ -63,7 +67,7 @@ jobs:
                 - port: 3000
                 environmentVariables:
                 - name: NEXT_PUBLIC_API_URL
-                  value: http://localhost:5001
+                  value: "http://backend:5001"
                 resources:
                   requests:
                     cpu: 1
@@ -73,14 +77,12 @@ jobs:
               type: Public
               ports:
               - port: 5001
-              - port: 3000
+              - port: 80
               dnsNameLabel: ms-challenge-${{ github.run_number }}
             imageRegistryCredentials:
             - server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
               username: ${{ secrets.REGISTRY_USERNAME }}
               password: ${{ secrets.REGISTRY_PASSWORD }}
-          tags: null
-          type: Microsoft.ContainerInstance/containerGroups
           EOL
 
       # Deploy to Azure Container Instances
@@ -91,4 +93,4 @@ jobs:
       # Output the URL of the deployed application
       - name: "Show Application URL"
         run: |
-          echo "Application URL: http://ms-challenge-${{ github.run_number }}.westus.azurecontainer.io:3000"
+          echo "Application URL: http://ms-challenge-${{ github.run_number }}.canadacentral.azurecontainer.io"

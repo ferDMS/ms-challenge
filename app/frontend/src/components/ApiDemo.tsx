@@ -58,7 +58,7 @@ export default function ApiDemo() {
         </h3>
         <p className="text-red-500 dark:text-red-300 text-sm">{error}</p>
         <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          Make sure your Flask backend is running on port 5000
+          Make sure your Flask backend is running on port 5001
         </p>
       </div>
     );
