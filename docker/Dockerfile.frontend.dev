@@ -2,6 +2,13 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# Define build argument for PORT with default value
+ARG PORT=3000
+
+# Set as environment variable
+ENV PORT=$PORT
+ENV NEXT_PUBLIC_API_URL=http://localhost:5001
+
 # Copy package.json and install dependencies
 COPY app/frontend/package*.json ./
 RUN npm install
@@ -9,7 +16,8 @@ RUN npm install
 # We'll mount the source code as a volume in docker-compose
 # so we don't need to copy it here
 
-EXPOSE 3000
+# Dynamically expose the port from the environment variable
+EXPOSE $PORT
 
 # Command will be overridden in docker-compose.dev.yml
-CMD ["npm", "run", "dev"]
+CMD ["sh", "-c", "npm run dev -- -p $PORT"]

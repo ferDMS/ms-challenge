@@ -3,6 +3,9 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.backend
+      # add port arg
+      args:
+        - PORT=5001
     image: ms-challenge-backend-dev:latest
     pull_policy: build # This ensures it builds if not present
     ports:
@@ -21,6 +24,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.frontend.dev
+      args:
+        - PORT=3000
     image: ms-challenge-frontend-dev:latest
     pull_policy: build # This ensures it builds if not present
     ports:
@@ -32,6 +37,7 @@ services:
       - backend
     environment:
       - NEXT_PUBLIC_API_URL=http://localhost:5001
+      - PORT=3000
     command: npm run dev
     networks:
       - app-network

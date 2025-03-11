@@ -2,16 +2,18 @@ FROM python:3.9-slim
 
 WORKDIR /app
 
+ARG PORT=5001
+ENV PORT=${PORT}
+
 # Install dependencies first for better caching
 COPY app/backend/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt gunicorn
 
 # Copy application code
 COPY app/backend /app
-COPY app/services /app/services
 
 # Expose the backend port
-EXPOSE 5001
+EXPOSE ${PORT}
 
 # Run with gunicorn in production mode
-CMD ["gunicorn", "--bind", "0.0.0.0:5001", "wsgi:app"]
+CMD gunicorn app:app -b 0.0.0.0:${PORT} -w 5

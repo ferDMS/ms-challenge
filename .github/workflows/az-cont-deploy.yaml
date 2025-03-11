@@ -31,19 +31,21 @@ jobs:
           docker build -f docker/Dockerfile.backend -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }}
 
-      # Build and push the frontend image
+      # Build and push the frontend image with PORT build argument
       - name: "Build and push frontend image"
         run: |
-          docker build -f docker/Dockerfile.frontend -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }} .
+          docker build -f docker/Dockerfile.frontend \
+            --build-arg PORT=80 \
+            -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }}
 
-      # Generate ACI container group YAML definition
-      - name: "Generate ACI container group definition"
+      # Generate backend ACI YAML definition
+      - name: "Generate backend ACI definition"
         run: |
-          cat > container-group.yaml << EOL
+          cat > backend-container.yaml << EOL
           apiVersion: 2019-12-01
           location: canadacentral
-          name: ms-challenge-${{ github.run_number }}
+          name: ms-challenge-backend-aci
           properties:
             containers:
             - name: backend
@@ -58,39 +60,73 @@ jobs:
                   value: '0'
                 resources:
                   requests:
-                    cpu: 1
-                    memoryInGB: 1.5
-            - name: frontend
-              properties:
-                image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }}
-                ports:
-                - port: 3000
-                environmentVariables:
-                - name: NEXT_PUBLIC_API_URL
-                  value: "http://backend:5001"
-                resources:
-                  requests:
-                    cpu: 1
-                    memoryInGB: 1.5
+                    cpu: 2
+                    memoryInGB: 4
             osType: Linux
             ipAddress:
               type: Public
               ports:
               - port: 5001
-              - port: 80
-              dnsNameLabel: ms-challenge-${{ github.run_number }}
+              dnsNameLabel: ms-challenge-backend-aci
             imageRegistryCredentials:
             - server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
               username: ${{ secrets.REGISTRY_USERNAME }}
               password: ${{ secrets.REGISTRY_PASSWORD }}
           EOL
 
-      # Deploy to Azure Container Instances
-      - name: "Deploy to Azure Container Instances"
+      # Generate frontend ACI YAML definition
+      - name: "Generate frontend ACI definition"
         run: |
-          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file container-group.yaml
+          cat > frontend-container.yaml << EOL
+          apiVersion: 2019-12-01
+          location: canadacentral
+          name: ms-challenge-frontend-aci
+          properties:
+            containers:
+            - name: frontend
+              properties:
+                image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }}
+                ports:
+                - port: 80
+                environmentVariables:
+                - name: NEXT_PUBLIC_API_URL
+                  value: "http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001"
+                - name: PORT
+                  value: "80"
+                resources:
+                  requests:
+                    cpu: 2
+                    memoryInGB: 4
+            osType: Linux
+            ipAddress:
+              type: Public
+              ports:
+              - port: 80
+              dnsNameLabel: ms-challenge-frontend-aci
+            imageRegistryCredentials:
+            - server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+              username: ${{ secrets.REGISTRY_USERNAME }}
+              password: ${{ secrets.REGISTRY_PASSWORD }}
+          EOL
 
-      # Output the URL of the deployed application
-      - name: "Show Application URL"
+      # Deploy backend to Azure Container Instances
+      - name: "Deploy backend to Azure Container Instances"
         run: |
-          echo "Application URL: http://ms-challenge-${{ github.run_number }}.canadacentral.azurecontainer.io"
+          # Try to update first, create if it doesn't exist
+          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file backend-container.yaml || \
+          (az container delete -y --resource-group ${{ secrets.RESOURCE_GROUP }} --name ms-challenge-backend-aci && \
+          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file backend-container.yaml)
+
+      # Deploy frontend to Azure Container Instances
+      - name: "Deploy frontend to Azure Container Instances"
+        run: |
+          # Try to update first, create if it doesn't exist
+          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file frontend-container.yaml || \
+          (az container delete -y --resource-group ${{ secrets.RESOURCE_GROUP }} --name ms-challenge-frontend-aci && \
+          az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file frontend-container.yaml)
+
+      # Output the URLs of the deployed applications
+      - name: "Show Application URLs"
+        run: |
+          echo "Frontend URL: http://ms-challenge-frontend-aci.canadacentral.azurecontainer.io"
+          echo "Backend URL: http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001"

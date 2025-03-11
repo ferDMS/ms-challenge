@@ -2,6 +2,13 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# Define build argument for PORT with default value
+ARG PORT=80
+
+# Set as environment variable
+ENV PORT=$PORT
+ENV NEXT_PUBLIC_API_URL=http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001
+
 # Install dependencies first for better caching
 COPY app/frontend/package*.json ./
 RUN npm install
@@ -12,8 +19,8 @@ COPY app/frontend .
 # Build the Next.js application
 RUN npm run build
 
-# Expose the frontend port
-EXPOSE 3000
+# Dynamically expose the port from the environment variable
+EXPOSE $PORT
 
 # Start the application
-CMD ["npm", "start"]
+CMD ["sh", "-c", "npm start -- -p $PORT"]
