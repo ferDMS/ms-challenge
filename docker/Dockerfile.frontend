@@ -4,10 +4,11 @@ WORKDIR /app
 
 # Define build argument for PORT with default value
 ARG PORT=80
+ARG NEXT_PUBLIC_API_URL=http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001
 
 # Set as environment variable
 ENV PORT=$PORT
-ENV NEXT_PUBLIC_API_URL=http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
 
 # Install dependencies first for better caching
 COPY app/frontend/package*.json ./

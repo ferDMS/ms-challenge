@@ -12,7 +12,6 @@ services:
       - "5001:5001"
     volumes:
       - ./app/backend:/app
-      - ./app/services:/app/services
     environment:
       - FLASK_APP=app.py
       - FLASK_DEBUG=1
