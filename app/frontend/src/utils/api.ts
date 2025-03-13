@@ -20,7 +20,11 @@ const api = axios.create({
  */
 async function callAPI<T>(
   endpoint: string,
-  options?: { method?: string; data?: any; headers?: Record<string, string> }
+  options?: {
+    method?: string;
+    data?: Record<string, unknown>;
+    headers?: Record<string, string>;
+  }
 ): Promise<T> {
   try {
     const response = await api({
@@ -60,8 +64,11 @@ export async function getRandomPokemon() {
   return callAPI<Pokemon>("/api/pokemon/random");
 }
 
-export default {
+// Create named export object
+const apiService = {
   getHelloWorld,
   checkHealth,
   getRandomPokemon,
 };
+
+export default apiService;

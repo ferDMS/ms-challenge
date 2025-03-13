@@ -1,7 +1,5 @@
 "use client";
 
-import Image from "next/image";
-import ApiDemo from "@/components/ApiDemo";
 import PokemonCard from "@/components/PokemonCard";
 import ApiStatus from "../components/ApiStatus";
 

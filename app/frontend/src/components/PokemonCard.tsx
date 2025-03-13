@@ -1,6 +1,7 @@
 "use client";
 
 import { usePokemon } from "../hooks/usePokemon";
+import Image from "next/image";
 
 interface PokemonCardProps {
   className?: string;
@@ -85,9 +86,11 @@ const PokemonCard: React.FC<PokemonCardProps> = ({ className = "" }) => {
     >
       <div className={`${bgColor} p-6 flex flex-col items-center`}>
         {pokemon.sprite ? (
-          <img
+          <Image
             src={pokemon.sprite}
             alt={`${formattedName} sprite`}
+            width={144} // 36 * 4 = 144px (w-36 is roughly 144px)
+            height={144} // 36 * 4 = 144px (h-36 is roughly 144px)
             className="w-36 h-36 object-contain"
           />
         ) : (
