@@ -21,6 +21,7 @@ services:
       context: .
       dockerfile: ./docker/Dockerfile.frontend
       args:
+        - NEXT_PUBLIC_API_URL=http://localhost:5001
         - PORT=3000
     image: ms-challenge-frontend:latest
     pull_policy: build # This ensures it builds if not present

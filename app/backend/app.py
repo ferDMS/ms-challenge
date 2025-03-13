@@ -1,6 +1,8 @@
 import logging
 from flask import Flask, jsonify
 from flask_cors import CORS
+import requests
+import random
 
 app = Flask(__name__)
 
@@ -32,6 +34,40 @@ def health_check():
             'api': 'available'
         }
     })
+
+# Random Pokemon endpoint - fetches a random first generation Pokemon
+@app.route('/api/pokemon/random', methods=['GET'])
+def random_pokemon():
+    logger.info("Handling GET request for /api/pokemon/random endpoint")
+    try:
+        # First generation Pokemon IDs range from 1-151
+        pokemon_id = random.randint(1, 151)
+        
+        # Fetch data from PokeAPI
+        response = requests.get(f"https://pokeapi.co/api/v2/pokemon/{pokemon_id}")
+        response.raise_for_status()  # Raise exception for HTTP errors
+        
+        pokemon_data = response.json()
+        
+        # Extract only basic information
+        basic_info = {
+            "id": pokemon_data["id"],
+            "name": pokemon_data["name"],
+            "height": pokemon_data["height"],
+            "weight": pokemon_data["weight"],
+            "types": [t["type"]["name"] for t in pokemon_data["types"]],
+            "sprite": pokemon_data["sprites"]["front_default"],
+            "generation": "first"
+        }
+        
+        return jsonify(basic_info)
+    
+    except requests.RequestException as e:
+        logger.error(f"Error fetching Pokemon data: {e}")
+        return jsonify({"error": "Failed to fetch Pokemon data"}), 503
+    except Exception as e:
+        logger.error(f"Unexpected error in random_pokemon: {e}")
+        return jsonify({"error": "An unexpected error occurred"}), 500
 
 # Error handlers for common HTTP errors - improve user experience and logging
 @app.errorhandler(403)
