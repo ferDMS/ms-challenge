@@ -1,30 +1,36 @@
 /**
  * Utility functions for making API calls to the backend
  */
+import axios from "axios";
+import { Pokemon } from "../types/Pokemon";
 
 // Base URL for the backend API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
 
+// Configure axios defaults
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
 /**
- * Generic fetch wrapper with error handling
+ * Generic API request wrapper with error handling
  */
-async function fetchFromAPI<T>(
+async function callAPI<T>(
   endpoint: string,
-  options?: RequestInit
+  options?: { method?: string; data?: any; headers?: Record<string, string> }
 ): Promise<T> {
   try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      headers: {
-        "Content-Type": "application/json",
-      },
-      ...options,
+    const response = await api({
+      url: endpoint,
+      method: options?.method || "GET",
+      data: options?.data,
+      headers: options?.headers,
     });
 
-    if (!response.ok) {
-      throw new Error(`API error: ${response.status} ${response.statusText}`);
-    }
-
-    return await response.json();
+    return response.data;
   } catch (error) {
     console.error("API request failed:", error);
     throw error;
@@ -35,19 +41,27 @@ async function fetchFromAPI<T>(
  * Get hello world message from the root endpoint
  */
 export async function getHelloWorld() {
-  return fetchFromAPI<{ message: string; status: string }>("/");
+  return callAPI<{ message: string; status: string }>("/");
 }
 
 /**
  * Check the health of the API
  */
 export async function checkHealth() {
-  return fetchFromAPI<{ status: string; services: Record<string, string> }>(
+  return callAPI<{ status: string; services: Record<string, string> }>(
     "/api/health"
   );
+}
+
+/**
+ * Get a random Pokemon
+ */
+export async function getRandomPokemon() {
+  return callAPI<Pokemon>("/api/pokemon/random");
 }
 
 export default {
   getHelloWorld,
   checkHealth,
+  getRandomPokemon,
 };
