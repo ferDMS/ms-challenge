@@ -55,7 +55,7 @@ jobs:
                 - port: 5001
                 environmentVariables:
                 - name: FLASK_APP
-                  value: app.py
+                  value: run.py
                 - name: FLASK_DEBUG
                   value: '0'
                 resources:
