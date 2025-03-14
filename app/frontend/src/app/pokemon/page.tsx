@@ -1,7 +1,7 @@
 "use client";
 
-import PokemonCard from "@/components/PokemonCard";
-import ApiStatus from "@/components/ApiStatus";
+import PokemonCard from "@/components/pokemon/PokemonCard";
+import ApiStatus from "@/components/api/ApiStatus";
 
 export default function Home() {
   return (
