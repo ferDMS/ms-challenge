@@ -60,8 +60,8 @@ jobs:
                   value: '0'
                 resources:
                   requests:
-                    cpu: 2
-                    memoryInGB: 4
+                    cpu: 1
+                    memoryInGB: 2
             osType: Linux
             ipAddress:
               type: Public
@@ -95,8 +95,8 @@ jobs:
                   value: "80"
                 resources:
                   requests:
-                    cpu: 2
-                    memoryInGB: 4
+                    cpu: 1
+                    memoryInGB: 2
             osType: Linux
             ipAddress:
               type: Public
