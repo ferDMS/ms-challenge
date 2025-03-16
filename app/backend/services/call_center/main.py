@@ -62,7 +62,7 @@ def create_transcription(user_config : helper.Read_Only_Dict) -> str :
         "displayName" : f"call_center_{datetime.now()}",
     }
 
-    response = rest_helper.send_post(uri=uri, content=content, key=user_config["speech_subscription_key"], expected_status_codes=[HTTPStatus.CREATED])
+    response = rest_helper.send_post(uri=uri, content=content, key=user_config["subscription_key"], expected_status_codes=[HTTPStatus.CREATED])
     
     # Create Transcription API JSON response sample and schema:
     # https://westus.dev.cognitive.microsoft.com/docs/services/speech-to-text-api-v3-0/operations/CreateTranscription
@@ -78,7 +78,7 @@ def create_transcription(user_config : helper.Read_Only_Dict) -> str :
 
 def get_transcription_status(transcription_id : str, user_config : helper.Read_Only_Dict) -> bool :
     uri = f"https://{user_config['speech_endpoint']}{SPEECH_TRANSCRIPTION_PATH}/{transcription_id}"
-    response = rest_helper.send_get(uri=uri, key=user_config["speech_subscription_key"], expected_status_codes=[HTTPStatus.OK])
+    response = rest_helper.send_get(uri=uri, key=user_config["subscription_key"], expected_status_codes=[HTTPStatus.OK])
     if "failed" == response["json"]["status"].lower() :
         raise Exception(f"Unable to transcribe audio input. Response:{linesep}{response['text']}")
     else :
@@ -93,7 +93,7 @@ def wait_for_transcription(transcription_id : str, user_config : helper.Read_Onl
 
 def get_transcription_files(transcription_id : str, user_config : helper.Read_Only_Dict) -> Dict :
     uri = f"https://{user_config['speech_endpoint']}{SPEECH_TRANSCRIPTION_PATH}/{transcription_id}/files"
-    response = rest_helper.send_get(uri=uri, key=user_config["speech_subscription_key"], expected_status_codes=[HTTPStatus.OK])
+    response = rest_helper.send_get(uri=uri, key=user_config["subscription_key"], expected_status_codes=[HTTPStatus.OK])
     return response["json"]
 
 def get_transcription_uri(transcription_files : Dict, user_config : helper.Read_Only_Dict) -> str :
@@ -128,7 +128,7 @@ def get_transcription_phrases(transcription : Dict, user_config : helper.Read_On
 
 def delete_transcription(transcription_id : str, user_config : helper.Read_Only_Dict) -> None :
     uri = f"https://{user_config['speech_endpoint']}{SPEECH_TRANSCRIPTION_PATH}/{transcription_id}"
-    rest_helper.send_delete(uri=uri, key=user_config["speech_subscription_key"], expected_status_codes=[HTTPStatus.NO_CONTENT])
+    rest_helper.send_delete(uri=uri, key=user_config["subscription_key"], expected_status_codes=[HTTPStatus.NO_CONTENT])
 
 def get_sentiments_helper(documents : List[Dict], user_config : helper.Read_Only_Dict) -> Dict :
     uri = f"https://{user_config['language_endpoint']}{SENTIMENT_ANALYSIS_PATH}{SENTIMENT_ANALYSIS_QUERY}"
@@ -136,7 +136,7 @@ def get_sentiments_helper(documents : List[Dict], user_config : helper.Read_Only
         "kind" : "SentimentAnalysis",
         "analysisInput" : { "documents" : documents },
     }
-    response = rest_helper.send_post(uri = uri, content=content, key=user_config["language_subscription_key"], expected_status_codes=[HTTPStatus.OK])
+    response = rest_helper.send_post(uri = uri, content=content, key=user_config["subscription_key"], expected_status_codes=[HTTPStatus.OK])
     return response["json"]["results"]["documents"]
 
 def get_sentiment_analysis(phrases : List[TranscriptionPhrase], user_config : helper.Read_Only_Dict) -> List[SentimentAnalysisResult] :
@@ -203,10 +203,9 @@ def run() -> None :
   ENVIRONMENT VARIABLES (via .env file)
     The script also supports loading configuration from environment variables in a .env file:
     
-    AZURE_SPEECH_KEY                Your Azure Speech service subscription key.
-    AZURE_SPEECH_REGION             Your Azure Speech service region. Examples: westus, eastus
-    AZURE_LANGUAGE_KEY              Your Azure Cognitive Language subscription key.
-    AZURE_LANGUAGE_ENDPOINT         Your Azure Cognitive Language endpoint.
+    AZURE_AI_KEY                    Your Azure AI Services multiresource subscription key.
+    AZURE_SPEECH_ENDPOINT           Your Azure Speech Cognitive Services endpoint.
+    AZURE_LANGUAGE_ENDPOINT         Your Azure Language Cognitive Language endpoint.
     LANGUAGE                        The language to use (ISO 639-1 code). Default: en
     LOCALE                          The locale to use for batch transcription. Default: en-US
     INPUT_URL                       Input audio from URL.
@@ -223,7 +222,7 @@ def run() -> None :
         load_dotenv(override=True)
         
         # Check if we're using environment variables or command line args
-        if environ.get("AZURE_SPEECH_KEY") or environ.get("AZURE_LANGUAGE_KEY"):
+        if environ.get("AZURE_AI_KEY"):
             # Create user config from environment variables
             speech_endpoint = environ.get("AZURE_SPEECH_ENDPOINT", "")
             # Remove https:// prefix if present to avoid double prefixing
@@ -236,14 +235,12 @@ def run() -> None :
                 language_endpoint = language_endpoint.replace("https://", "")
                 
             user_config = helper.Read_Only_Dict({
-                "speech_subscription_key": environ.get("AZURE_SPEECH_KEY", ""),
+                "subscription_key": environ.get("AZURE_AI_KEY", ""),
                 "speech_endpoint": speech_endpoint,
-                "language_subscription_key": environ.get("AZURE_LANGUAGE_KEY", ""),
                 "language_endpoint": language_endpoint,
                 "language": environ.get("LANGUAGE", "en"),
                 "locale": environ.get("LOCALE", "en-US"),
                 "input_audio_url": environ.get("INPUT_URL", None),
-                "input_file_path": None,
                 "output_file_path": environ.get("OUTPUT_FILE", None),
                 "use_stereo_audio": environ.get("USE_STEREO", "false").lower() == "true"
             })
@@ -253,10 +250,8 @@ def run() -> None :
 
         transcription : Dict
         transcription_id : str
-        if user_config["input_file_path"] is not None :
-            with open(user_config["input_file_path"], mode="r") as f :
-                transcription = loads(f.read())
-        elif user_config["input_audio_url"] is not None :
+
+        if user_config["input_audio_url"] is not None :
             # How to use batch transcription:
             # https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/cognitive-services/Speech-Service/batch-transcription.md
             transcription_id = create_transcription(user_config)
