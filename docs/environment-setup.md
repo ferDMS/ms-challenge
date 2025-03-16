@@ -42,7 +42,6 @@ This document provides instructions for configuring your environment variables f
 
 - `AZURE_SPEECH_ENDPOINT`: The endpoint URL for your Azure Speech service
 - `AZURE_SPEECH_KEY`: Your API key for Azure Speech
-- `AZURE_SPEECH_REGION`: The region where your Azure Speech service is deployed
 
 ## Optional: Azure Blob Storage Configuration
 
