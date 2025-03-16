@@ -16,4 +16,5 @@ COPY app/backend /app
 EXPOSE ${PORT}
 
 # Run with gunicorn in production mode
-CMD gunicorn run:app -b 0.0.0.0:${PORT} -w 5
+# Greater timeout time for batch analysis calls
+CMD gunicorn run:app -b 0.0.0.0:${PORT} -w 5 -t 180
