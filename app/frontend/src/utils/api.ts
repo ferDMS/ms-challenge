@@ -2,7 +2,7 @@
  * Utility functions for making API calls to the backend
  */
 import axios from "axios";
-import { Pokemon } from "../types/Pokemon";
+import { Pokemon } from "@/types/Pokemon";
 
 // Base URL for the backend API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";

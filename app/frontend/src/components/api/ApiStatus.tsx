@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getHelloWorld, checkHealth } from "../utils/api";
+import { getHelloWorld, checkHealth } from "@/utils/api";
 
 interface ApiStatusProps {
   className?: string;
