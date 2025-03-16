@@ -11,7 +11,7 @@ services:
     ports:
       - "5001:5001"
     environment:
-      - FLASK_APP=app.py
+      - FLASK_APP=run.py
       - FLASK_DEBUG=0
     networks:
       - app-network

@@ -14,61 +14,36 @@ This document provides instructions for configuring your environment variables f
 
 3. Make sure not to commit your `.env` file to version control as it may contain sensitive information.
 
-## Core Configuration
+## Environment Variables Reference
 
-- `NODE_ENV`: The environment in which the application is running (development, staging, production)
-- `PORT`: The port number the application will listen on
+Below is a reference for all environment variables used in this project:
 
-## Azure OpenAI Configuration
+### Azure Container Registry and Instance Services
 
-- `AZURE_OPENAI_API_ENDPOINT`: The endpoint URL for your Azure OpenAI service
-- `AZURE_OPENAI_API_KEY`: Your API key for Azure OpenAI
-- `AZURE_OPENAI_CHAT_DEPLOYMENT_NAME`: The deployment name for your chat model (e.g., gpt-35-turbo)
-- `AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT_NAME`: The deployment name for your embeddings model (e.g., text-embedding-ada-002)
-- `AZURE_OPENAI_API_VERSION`: The API version to use with Azure OpenAI
+- `AZURE_SUBSCRIPTION_ID`: Azure subscription ID
+- `AZURE_RESOURCE_GROUP`: Azure resource group name
+- `AZURE_LOCATION`: Azure region/location
+- `REGISTRY_LOGIN_SERVER`: Azure Container Registry login server
+- `REGISTRY_USERNAME`: Azure Container Registry username
+- `REGISTRY_PASSWORD`: Azure Container Registry password
+- `RESOURCE_GROUP`: Resource group (if different from above)
 
-## Azure Search Configuration
+### Azure AI Services
 
-- `AZURE_SEARCH_ENDPOINT`: The endpoint URL for your Azure Cognitive Search service
-- `AZURE_SEARCH_KEY`: Your API key for Azure Cognitive Search
-- `AZURE_SEARCH_INDEX`: The name of your search index
-
-## Azure Document Intelligence Configuration
-
-- `AZURE_DOCUMENT_INTELLIGENCE_ENDPOINT`: The endpoint URL for your Document Intelligence service
-- `AZURE_DOCUMENT_INTELLIGENCE_KEY`: Your API key for Document Intelligence
-
-## Azure Speech Services Configuration
-
+- `AZURE_AI_KEY`: API key for Azure AI Services
 - `AZURE_SPEECH_ENDPOINT`: The endpoint URL for your Azure Speech service
-- `AZURE_SPEECH_KEY`: Your API key for Azure Speech
-- `AZURE_SPEECH_REGION`: The region where your Azure Speech service is deployed
+- `AZURE_LANGUAGE_ENDPOINT`: The endpoint URL for your Language service
 
-## Optional: Azure Blob Storage Configuration
+### Language Configuration
 
-- `AZURE_STORAGE_ACCOUNT_CONNECTION_STRING`: The connection string for your Azure Storage account
-- `AZURE_STORAGE_CONTAINER`: The name of the container in your storage account
+- `LANGUAGE`: Language for sentiment analysis and conversation analysis (ISO 639-1 code)
+- `LOCALE`: Locale for batch transcription of audio
 
-## Security Configuration
+### Input/Output Configuration
 
-- `AUTH_ENABLED`: Whether authentication is enabled for the application
-- `AUTH_CLIENT_ID`: The client ID for authentication
-- `AUTH_CLIENT_SECRET`: The client secret for authentication
-- `AUTH_TENANT_ID`: The tenant ID for authentication
-
-## Application Features
-
-- `ENABLE_CHAT_HISTORY`: Enable or disable storing chat history
-- `ENABLE_DOCUMENT_UPLOAD`: Enable or disable document upload functionality
-- `ENABLE_SPEECH_TO_TEXT`: Enable or disable speech-to-text functionality
-
-## Adding New Azure Services
-
-To integrate additional Azure services:
-
-1. Add the necessary environment variables to your `.env` file
-2. Create a new service module in the `app/services` directory
-3. Import and initialize the service in your application
+- `INPUT_URL`: Input audio URL or path
+- `OUTPUT_FILE`: Output file for phrase list and conversation summary
+- `USE_STEREO`: Use stereo audio format (true/false)
 
 ## Troubleshooting
 

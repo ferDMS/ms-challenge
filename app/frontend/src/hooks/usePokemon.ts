@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect } from "react";
-import { getRandomPokemon } from "../utils/api";
-import { Pokemon } from "../types/Pokemon";
+import { getRandomPokemon } from "@/utils/api";
+import { Pokemon } from "@/types/Pokemon";
 
 interface UsePokemonReturn {
   pokemon: Pokemon | null;

@@ -1,6 +1,6 @@
 "use client";
 
-import { usePokemon } from "../hooks/usePokemon";
+import { usePokemon } from "@/hooks/usePokemon";
 import Image from "next/image";
 
 interface PokemonCardProps {
