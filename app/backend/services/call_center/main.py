@@ -15,7 +15,6 @@ from typing import Dict, List, Tuple
 import uuid
 from . import helper
 from . import rest_helper
-from . import user_config_helper
 from dotenv import load_dotenv
 
 # This should not change unless you switch to a new version of the Speech REST API.
@@ -190,95 +189,96 @@ def print_simple_output(phrases : List[TranscriptionPhrase], sentiment_analysis_
     print(get_simple_output(phrases, sentiments))
 
 def print_full_output(output_file_path : str, transcription : Dict, sentiment_confidence_scores : List[Dict]) -> None :
-    results = {
+    result = {
         "transcription" : merge_sentiment_confidence_scores_into_transcription(transcription, sentiment_confidence_scores)
     }
     with open(output_file_path, mode = "w", newline = "") as f :
-        f.write(dumps(results, indent=2))
-    return results
+        f.write(dumps(result, indent=2))
+    return result
 
-def run() -> None :
-    usage = """python call_center.py
+def run(params={}) -> Dict:
+    # Try to load from .env file first for backward compatibility
+    load_dotenv(override=True)
     
-  ENVIRONMENT VARIABLES (via .env file)
-    The script also supports loading configuration from environment variables in a .env file:
+    # Default values
+    defaults = {
+        "language": "en",
+        "locale": "en-US",
+        "use_stereo_audio": False,
+        "input_audio_url": None,
+        "output_file_path": None
+    }
     
-    AZURE_AI_KEY                    Your Azure AI Services multiresource subscription key.
-    AZURE_SPEECH_ENDPOINT           Your Azure Speech Cognitive Services endpoint.
-    AZURE_LANGUAGE_ENDPOINT         Your Azure Language Cognitive Language endpoint.
-    LANGUAGE                        The language to use (ISO 639-1 code). Default: en
-    LOCALE                          The locale to use for batch transcription. Default: en-US
-    INPUT_URL                       Input audio from URL.
-    OUTPUT_FILE                     Output file path.
-    USE_STEREO                      Use stereo audio format (true/false). Default: false
+    # Environment variables (if any) - kept for backward compatibility
+    env_vars = {}
     
-    Environment variables take precedence over command line arguments.
-"""
-
-    if user_config_helper.cmd_option_exists("--help") :
-        print(usage)
-    else :
-        # Try to load from .env file first
-        load_dotenv(override=True)
+    if environ.get("AZURE_AI_KEY"):
+        speech_endpoint = environ.get("AZURE_SPEECH_ENDPOINT", "")
+        # Remove https:// prefix if present to avoid double prefixing
+        if speech_endpoint.startswith("https://"):
+            speech_endpoint = speech_endpoint.replace("https://", "")
         
-        # Check if we're using environment variables or command line args
-        if environ.get("AZURE_AI_KEY"):
-            # Create user config from environment variables
-            speech_endpoint = environ.get("AZURE_SPEECH_ENDPOINT", "")
-            # Remove https:// prefix if present to avoid double prefixing
-            if speech_endpoint.startswith("https://"):
-                speech_endpoint = speech_endpoint.replace("https://", "")
+        language_endpoint = environ.get("AZURE_LANGUAGE_ENDPOINT", "")
+        # Remove https:// prefix if present
+        if language_endpoint.startswith("https://"):
+            language_endpoint = language_endpoint.replace("https://", "")
             
-            language_endpoint = environ.get("AZURE_LANGUAGE_ENDPOINT", "")
-            # Remove https:// prefix if present
-            if language_endpoint.startswith("https://"):
-                language_endpoint = language_endpoint.replace("https://", "")
-                
-            user_config = helper.Read_Only_Dict({
-                "subscription_key": environ.get("AZURE_AI_KEY", ""),
-                "speech_endpoint": speech_endpoint,
-                "language_endpoint": language_endpoint,
-                "language": environ.get("LANGUAGE", "en"),
-                "locale": environ.get("LOCALE", "en-US"),
-                "input_audio_url": environ.get("INPUT_URL", None),
-                "output_file_path": environ.get("OUTPUT_FILE", None),
-                "use_stereo_audio": environ.get("USE_STEREO", "false").lower() == "true"
-            })
-        else:
-            # Fall back to command line arguments
-            user_config = user_config_helper.user_config_from_args(usage)
+        env_vars = {
+            "subscription_key": environ.get("AZURE_AI_KEY", ""),
+            "speech_endpoint": speech_endpoint,
+            "language_endpoint": language_endpoint,
+            "language": environ.get("LANGUAGE", defaults["language"]),
+            "locale": environ.get("LOCALE", defaults["locale"]),
+            "output_file_path": environ.get("OUTPUT_FILE", None),
+        }
+    
+    # Prepare configuration - env vars take precedence over defaults
+    env_config = {**defaults, **env_vars}
+    
+    # Update with params (params take highest precedence)
+    if params:
+        config = {**env_config, **params}
+    
+    # Convert to Read_Only_Dict for compatibility with existing code
+    user_config = helper.Read_Only_Dict(config)
 
-        transcription : Dict
-        transcription_id : str
+    transcription : Dict
+    transcription_id : str
 
-        if user_config["input_audio_url"] is not None :
-            # How to use batch transcription:
-            # https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/cognitive-services/Speech-Service/batch-transcription.md
-            transcription_id = create_transcription(user_config)
-            wait_for_transcription(transcription_id, user_config)
-            print(f"Transcription ID: {transcription_id}")
-            transcription_files = get_transcription_files(transcription_id, user_config)
-            transcription_uri = get_transcription_uri(transcription_files, user_config)
-            print(f"Transcription URI: {transcription_uri}")
-            transcription = get_transcription(transcription_uri)
-        else :
-            raise Exception(f"Missing input audio URL.{linesep}{usage}")
-            
+    if user_config["input_audio_url"] is not None:
+        # How to use batch transcription:
+        # https://github.com/MicrosoftDocs/azure-docs/blob/main/articles/cognitive-services/Speech-Service/batch-transcription.md
+        transcription_id = create_transcription(user_config)
+        wait_for_transcription(transcription_id, user_config)
+        print(f"Transcription ID: {transcription_id}")
+        transcription_files = get_transcription_files(transcription_id, user_config)
+        transcription_uri = get_transcription_uri(transcription_files, user_config)
+        print(f"Transcription URI: {transcription_uri}")
+        transcription = get_transcription(transcription_uri)
+        
         # For stereo audio, the phrases are sorted by channel number, so resort them by offset.
         transcription["recognizedPhrases"] = sorted(transcription["recognizedPhrases"], key=lambda phrase : phrase["offsetInTicks"])
         phrases = get_transcription_phrases(transcription, user_config)
         sentiment_analysis_results = get_sentiment_analysis(phrases, user_config)
         sentiment_confidence_scores = get_sentiment_confidence_scores(sentiment_analysis_results)
         
-        # Print simple output (transcription and sentiment only)
-        # print_simple_output(phrases, sentiment_analysis_results)
+        # Prepare result to return
+        result = {
+            "transcription": merge_sentiment_confidence_scores_into_transcription(transcription.copy(), sentiment_confidence_scores)
+        }
         
         # Save full output to file if requested
         if user_config["output_file_path"] is not None:
             # Create directory if it doesn't exist
             output_path = Path(user_config["output_file_path"])
             output_path.parent.mkdir(parents=True, exist_ok=True)
-            return print_full_output(user_config["output_file_path"], transcription, sentiment_confidence_scores)
+            
+            with open(user_config["output_file_path"], mode="w", newline="") as f:
+                f.write(dumps(result, indent=2))
+        
+        return result
+    else:
+        raise Exception(f"Missing input audio URL.")
 
 if "__main__" == __name__ :
     run()
