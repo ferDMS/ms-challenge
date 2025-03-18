@@ -1,11 +1,8 @@
 "use client";
 
-import Header from "@/components/general/Header";
+import Header from "@/components/layout/Header";
+import Sidebar from "@/components/layout/Sidebar";
 
 export default function Test() {
-  return (
-    <div>
-      <Header></Header>
-    </div>
-  );
+  return <div></div>;
 }

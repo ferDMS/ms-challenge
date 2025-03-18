@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import "./globals.css";
 import { Providers } from "@/app/providers";
-import Header from "@/components/general/Header"; // Import the Header component
+import MainLayout from "@/components/layout/MainLayout"; // Import MainLayout instead of Header
 
 export const metadata: Metadata = {
   title: "WorkAble AI",
@@ -21,8 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>
-          <Header /> {/* Add the Header component here */}
-          <main>{children}</main>
+          <MainLayout>{children}</MainLayout>
         </Providers>
       </body>
     </html>
