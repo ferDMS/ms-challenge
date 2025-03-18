@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { DataGridDemo } from "@/components/people/CallsGridDemo";
 
 export default function PeoplePage() {
