@@ -1,0 +1,23 @@
+name: Environment Setup
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > .env
+        # This assumes your GitHub secret is named ENV_FILE
+
+      # Add your other build/test steps here
+      - name: Your next steps
+        run: |
+          # Your build/test commands that need the .env file

@@ -1,9 +1,7 @@
 import os
-from dotenv import load_dotenv
 from azure.cosmos import CosmosClient, PartitionKey
 
 # Load environment variables from .env file
-load_dotenv()
 
 def get_cosmos_client():
     """
