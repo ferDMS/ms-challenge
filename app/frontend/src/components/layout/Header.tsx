@@ -14,8 +14,12 @@ import {
   Settings24Regular,
   QuestionCircle24Regular,
   Person24Regular,
+  WeatherSunny24Regular,
+  WeatherMoon24Regular,
 } from "@fluentui/react-icons";
 import Image from "next/image";
+import { useTheme } from "../../context/ThemeContext";
+import { useState } from "react";
 
 export interface HeaderProps {
   productName?: string;
@@ -27,6 +31,15 @@ export const Header: React.FC<HeaderProps> = ({
   productName = "WorkAble",
   username = "John Doe",
 }) => {
+  const { isDarkMode, toggleTheme } = useTheme();
+  const [isRotating, setIsRotating] = useState(false);
+
+  const handleThemeToggle = () => {
+    setIsRotating(true);
+    toggleTheme();
+    setTimeout(() => setIsRotating(false), 500);
+  };
+
   return (
     <header
       style={{
@@ -54,6 +67,29 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Right section - Actions and Profile */}
       <Toolbar>
+        <div className="theme-toggle-wrapper">
+          <ToolbarButton
+            className="theme-toggle-button"
+            icon={
+              <div
+                style={{
+                  transform: isRotating ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.5s ease-in-out",
+                }}
+              >
+                {isDarkMode ? (
+                  <WeatherSunny24Regular />
+                ) : (
+                  <WeatherMoon24Regular />
+                )}
+              </div>
+            }
+            aria-label={
+              isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+            onClick={handleThemeToggle}
+          />
+        </div>
         <ToolbarButton icon={<QuestionCircle24Regular />} aria-label="Help" />
         <ToolbarButton icon={<Settings24Regular />} aria-label="Settings" />
         <ToolbarDivider vertical />

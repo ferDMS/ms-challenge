@@ -169,13 +169,13 @@ export const Sidebar: React.FC = () => {
       ],
     },
     {
-      title: "People",
-      key: "people",
+      title: "Participants",
+      key: "participants",
       icon: <People24Regular />,
       items: [
         {
           href: "/people",
-          text: "Participants Dashboard",
+          text: "Dashboard",
           icon: <Board24Regular />,
           activeIcon: <Board24Filled />,
         },
@@ -200,7 +200,7 @@ export const Sidebar: React.FC = () => {
       items: [
         {
           href: "/jobs",
-          text: "Jobs Dashboard",
+          text: "Dashboard",
           icon: <Board24Regular />,
           activeIcon: <Board24Filled />,
         },
