@@ -487,7 +487,7 @@ export default function SessionsPage() {
             value={searchText}
             onChange={handleSearchChange}
             contentBefore={<SearchRegular />}
-            size="small"
+            size="medium"
           />
         </Field>
 
@@ -497,7 +497,7 @@ export default function SessionsPage() {
             id={statusId}
             value={selectedStatus}
             onOptionSelect={(_, data) => handleStatusChange(_, data)}
-            size="small"
+            size="medium"
           >
             <Option value="all">All Statuses</Option>
             <Option value="scheduled">Scheduled</Option>
@@ -512,7 +512,7 @@ export default function SessionsPage() {
             id={typeId}
             value={selectedType}
             onOptionSelect={(_, data) => handleTypeChange(_, data)}
-            size="small"
+            size="medium"
           >
             <Option value="all">All Types</Option>
             <Option value="initial">Initial</Option>
@@ -532,7 +532,7 @@ export default function SessionsPage() {
             onChange={handleDateChange}
             contentBefore={<CalendarRegular />}
             placeholder="Select a date"
-            size="small"
+            size="medium"
           />
         </Field>
 

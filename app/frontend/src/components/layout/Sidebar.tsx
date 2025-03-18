@@ -45,7 +45,7 @@ const useStyles = makeStyles({
   },
   sectionTitle: {
     padding: "0 20px 6px", // Slightly reduced padding
-    fontSize: tokens.fontSizeBase200, // Smaller font size
+    fontSize: tokens.fontSizeBase300,
     fontWeight: tokens.fontWeightSemibold,
     color: tokens.colorNeutralForeground3,
   },
@@ -57,7 +57,7 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground1,
     cursor: "pointer",
     borderLeft: "3px solid transparent",
-    fontSize: tokens.fontSizeBase200, // Smaller font size
+    fontSize: tokens.fontSizeBase300,
     ":hover": {
       backgroundColor: tokens.colorNeutralBackground1Hover,
     },
@@ -79,7 +79,7 @@ const useStyles = makeStyles({
     minWidth: "auto",
   },
   navText: {
-    fontSize: tokens.fontSizeBase200, // Smaller font size
+    fontSize: tokens.fontSizeBase300,
   },
 });
 
