@@ -3,7 +3,6 @@ services:
     build:
       context: .
       dockerfile: ./docker/Dockerfile.backend
-      # add port arg
       args:
         - PORT=5001
     image: ms-challenge-backend-dev:latest
