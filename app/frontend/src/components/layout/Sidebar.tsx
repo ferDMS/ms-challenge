@@ -174,19 +174,19 @@ export const Sidebar: React.FC = () => {
       icon: <People24Regular />,
       items: [
         {
-          href: "/people",
+          href: "/participants",
           text: "Dashboard",
           icon: <Board24Regular />,
           activeIcon: <Board24Filled />,
         },
         {
-          href: "/people/all",
+          href: "/participants/all",
           text: "All Participants",
           icon: <People24Regular />,
           activeIcon: <People24Filled />,
         },
         {
-          href: "/people/new",
+          href: "/participants/new",
           text: "Register Participant",
           icon: <PersonAdd24Regular />,
           activeIcon: <PersonAdd24Regular />,

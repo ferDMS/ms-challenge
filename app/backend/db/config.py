@@ -12,7 +12,7 @@ CONTAINERS = {
     # },
     'sessions': {
         'name': 'sessions',
-        'partition_key': '/participantId'
+        'partition_key': '/id'
     },
     # 'jobs': {
     #     'name': 'jobs', 
