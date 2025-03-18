@@ -111,7 +111,7 @@ export const Sidebar: React.FC = () => {
     Record<string, boolean>
   >({
     sessions: true,
-    people: true,
+    participants: true,
     jobs: true,
   });
 
