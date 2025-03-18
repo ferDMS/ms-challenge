@@ -25,6 +25,11 @@ jobs:
           username: ${{ secrets.REGISTRY_USERNAME }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+        # This assumes your GitHub secret is named ENV_FILE
+      - name: Create .env file
+        run: |
+          echo "${{ secrets.ENV_FILE }}" > app/backend/.env
+
       # Build and push the backend image
       - name: "Build and push backend image"
         run: |

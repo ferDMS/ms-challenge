@@ -1,0 +1,118 @@
+"use client";
+
+import {
+  Avatar,
+  MenuButton,
+  Menu,
+  MenuItem,
+  tokens,
+  Toolbar,
+  ToolbarButton,
+  ToolbarDivider,
+} from "@fluentui/react-components";
+import {
+  Settings24Regular,
+  QuestionCircle24Regular,
+  Person24Regular,
+  WeatherSunny24Regular,
+  WeatherMoon24Regular,
+} from "@fluentui/react-icons";
+import Image from "next/image";
+import { useTheme } from "../../context/ThemeContext";
+import { useState } from "react";
+
+export interface HeaderProps {
+  productName?: string;
+  username?: string;
+  notificationCount?: number;
+}
+
+export const Header: React.FC<HeaderProps> = ({
+  productName = "WorkAble",
+  username = "John Doe",
+}) => {
+  const { isDarkMode, toggleTheme } = useTheme();
+  const [isRotating, setIsRotating] = useState(false);
+
+  const handleThemeToggle = () => {
+    setIsRotating(true);
+    toggleTheme();
+    setTimeout(() => setIsRotating(false), 500);
+  };
+
+  return (
+    <header
+      style={{
+        backgroundColor: tokens.colorNeutralBackground1,
+        borderBottom: `1px solid ${tokens.colorNeutralStroke2}`,
+        padding: "0 20px",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        height: "48px",
+      }}
+    >
+      {/* Left section - Logo and branding */}
+      <div style={{ display: "flex", alignItems: "center" }}>
+        <Image
+          src="/microsoft/mslogo.webp"
+          alt="Microsoft Logo"
+          width={112}
+          height={24}
+          priority
+        />
+        <ToolbarDivider vertical />
+        <span style={{ marginLeft: 10, fontWeight: 600 }}>{productName}</span>
+      </div>
+
+      {/* Right section - Actions and Profile */}
+      <Toolbar>
+        <div className="theme-toggle-wrapper">
+          <ToolbarButton
+            className="theme-toggle-button"
+            icon={
+              <div
+                style={{
+                  transform: isRotating ? "rotate(180deg)" : "rotate(0deg)",
+                  transition: "transform 0.5s ease-in-out",
+                }}
+              >
+                {isDarkMode ? (
+                  <WeatherSunny24Regular />
+                ) : (
+                  <WeatherMoon24Regular />
+                )}
+              </div>
+            }
+            aria-label={
+              isDarkMode ? "Switch to light mode" : "Switch to dark mode"
+            }
+            onClick={handleThemeToggle}
+          />
+        </div>
+        <ToolbarButton icon={<QuestionCircle24Regular />} aria-label="Help" />
+        <ToolbarButton icon={<Settings24Regular />} aria-label="Settings" />
+        <ToolbarDivider vertical />
+
+        <MenuButton
+          appearance="subtle"
+          icon={
+            <Avatar
+              name={username}
+              size={28}
+              image={{ src: "johndoe.png", alt: username }}
+              icon={<Person24Regular />}
+            />
+          }
+        >
+          <Menu>
+            <MenuItem>{username}</MenuItem>
+            <MenuItem>Settings</MenuItem>
+          </Menu>
+        </MenuButton>
+      </Toolbar>
+    </header>
+  );
+};
+
+export default Header;

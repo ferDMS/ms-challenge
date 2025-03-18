@@ -2,7 +2,7 @@ import logging
 import random
 import requests
 from flask import jsonify
-from . import pokemon_bp
+from .. import pokemon_bp
 
 logger = logging.getLogger(__name__)
 
