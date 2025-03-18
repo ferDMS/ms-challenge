@@ -76,14 +76,3 @@ export async function generateSessionAnalysis(id: string) {
     method: "POST",
   });
 }
-
-/**
- * Get sessions in calendar format
- */
-export async function getCalendarSessions(params?: {
-  start?: string;
-  end?: string;
-  coachId?: string;
-}) {
-  return callAPI<any[]>("/api/sessions/calendar", { params });
-}

@@ -490,7 +490,7 @@ export default function SessionDetail({
                       key={`positive-${index}`}
                       className={styles.sentimentPositive}
                     >
-                      <Text>"{item}"</Text>
+                      <Text>`{item}`</Text>
                     </div>
                   )
                 )}
@@ -501,7 +501,7 @@ export default function SessionDetail({
                       key={`negative-${index}`}
                       className={styles.sentimentNegative}
                     >
-                      <Text>"{item}"</Text>
+                      <Text>`{item}`</Text>
                     </div>
                   )
                 )}

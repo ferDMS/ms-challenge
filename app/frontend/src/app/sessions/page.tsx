@@ -9,9 +9,6 @@ import {
   tokens,
   Link,
   Spinner,
-  Toast,
-  ToastTitle,
-  ToastBody,
   Dropdown,
   Option,
   Field,
@@ -23,18 +20,11 @@ import {
   TableCell,
   TableCellLayout,
   useId,
-  Badge,
   Avatar,
-  Menu,
-  MenuTrigger,
-  MenuPopover,
-  MenuList,
-  MenuItem,
 } from "@fluentui/react-components";
 import {
   SearchRegular,
   AddRegular,
-  DismissRegular,
   FilterRegular,
   CalendarRegular,
   ArrowSortDownRegular,
@@ -43,7 +33,7 @@ import {
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { getSessions } from "@/api/sessions"; // Updated import path
-import { SessionPreview, SessionFilters } from "../../types/sessions";
+import { SessionPreview } from "@/types/sessions";
 
 // Styles for the page with FluentUI v2 styling system
 const useStyles = makeStyles({
@@ -153,8 +143,7 @@ export default function SessionsPage() {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dateInputValue, setDateInputValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [showErrorToast, setShowErrorToast] = useState(false);
+  // const [error, setError] = useState<string | null>(null);
   const searchId = useId("search");
   const statusId = useId("status");
   const typeId = useId("type");
@@ -182,13 +171,13 @@ export default function SessionsPage() {
   };
 
   // Format date for input element (YYYY-MM-DD)
-  const formatDateForInput = (date: Date | null): string => {
-    if (!date) return "";
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+  // const formatDateForInput = (date: Date | null): string => {
+  //   if (!date) return "";
+  //   const year = date.getFullYear();
+  //   const month = String(date.getMonth() + 1).padStart(2, "0");
+  //   const day = String(date.getDate()).padStart(2, "0");
+  //   return `${year}-${month}-${day}`;
+  // };
 
   // Fetch sessions on component mount
   useEffect(() => {
@@ -217,8 +206,6 @@ export default function SessionsPage() {
         setIsLoading(false);
       } catch (err) {
         console.error("Error loading sessions:", err);
-        setError("Failed to load sessions. Please try again.");
-        setShowErrorToast(true);
         setIsLoading(false);
       }
     };
