@@ -9,5 +9,7 @@
 **/*.pyo
 **/*.pyd
 **/.DS_Store
-# .env
-# .env.*
+.env
+.env.*
+venv
+.venv

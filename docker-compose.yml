@@ -15,6 +15,9 @@ services:
       - FLASK_DEBUG=0
     networks:
       - app-network
+    # Load .env
+    env_file:
+      - .env
 
   frontend:
     build:

@@ -51,6 +51,9 @@ jobs:
             - name: backend
               properties:
                 image: ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }}
+                # Load .env
+                env_file:
+                  - .env
                 ports:
                 - port: 5001
                 environmentVariables:

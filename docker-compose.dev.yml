@@ -17,6 +17,9 @@ services:
     command: flask run --host=0.0.0.0 --port=5001
     networks:
       - app-network
+    # Load .env
+    env_file:
+      - .env
 
   frontend:
     build:

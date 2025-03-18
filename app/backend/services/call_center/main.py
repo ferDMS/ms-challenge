@@ -15,7 +15,6 @@ from typing import Dict, List, Tuple
 import uuid
 from . import helper
 from . import rest_helper
-from dotenv import load_dotenv
 
 # This should not change unless you switch to a new version of the Speech REST API.
 SPEECH_TRANSCRIPTION_PATH = "/speechtotext/v3.2/transcriptions"
@@ -197,9 +196,6 @@ def print_full_output(output_file_path : str, transcription : Dict, sentiment_co
     return result
 
 def run(params={}) -> Dict:
-    # Try to load from .env file first for backward compatibility
-    load_dotenv(override=True)
-    
     # Default values
     defaults = {
         "language": "en",
