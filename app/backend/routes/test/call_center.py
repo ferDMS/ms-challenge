@@ -1,7 +1,7 @@
 import logging
 import json
 from flask import jsonify, request
-from . import call_center_bp
+from .. import call_center_bp
 from services.call_center.main import run
 
 logger = logging.getLogger(__name__)

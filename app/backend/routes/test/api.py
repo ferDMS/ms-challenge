@@ -1,6 +1,6 @@
 import logging
 from flask import jsonify
-from . import api_bp
+from .. import api_bp  # Import from parent package
 
 logger = logging.getLogger(__name__)
 
