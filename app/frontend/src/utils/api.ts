@@ -2,7 +2,7 @@
  * Utility functions for making API calls to the backend
  */
 import axios from "axios";
-import { Pokemon } from "@/types/Pokemon";
+import { Pokemon } from "@/types/test/pokemon";
 
 // Base URL for the backend API
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
@@ -18,12 +18,13 @@ const api = axios.create({
 /**
  * Generic API request wrapper with error handling
  */
-async function callAPI<T>(
+export async function callAPI<T>(
   endpoint: string,
   options?: {
     method?: string;
     data?: Record<string, unknown>;
     headers?: Record<string, string>;
+    params?: Record<string, string | number | boolean | undefined>;
   }
 ): Promise<T> {
   try {
@@ -32,6 +33,7 @@ async function callAPI<T>(
       method: options?.method || "GET",
       data: options?.data,
       headers: options?.headers,
+      params: options?.params,
     });
 
     return response.data;

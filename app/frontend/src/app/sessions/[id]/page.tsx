@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { useRouter } from "next/navigation";
-import { use } from "react";
 import {
   Card,
   Text,
@@ -39,44 +38,8 @@ import {
   Brain24Regular,
   ArrowLeft24Filled,
 } from "@fluentui/react-icons";
-// import { format } from "date-fns";
-
-// Define the Session interface based on our enhanced model
-interface SessionAISuggestions {
-  recommendedTopics: string[];
-  sentimentAnalysis: {
-    positive: string[];
-    negative: string[];
-  };
-  jobRecommendations?: {
-    id: string;
-    title: string;
-    match: number;
-    reason: string;
-  }[];
-}
-
-interface Session {
-  id: string;
-  title: string;
-  coachId: string;
-  coachName?: string;
-  participantId: string;
-  participantName: string;
-  date: string;
-  startTime: string;
-  endTime: string;
-  status: "scheduled" | "completed" | "cancelled";
-  type: "initial" | "follow-up" | "assessment" | "training" | "job-matching";
-  location: string;
-  notes: string;
-  topics: string[];
-  goals: string[];
-  nextSteps: string[];
-  completedSteps?: string[];
-  progressNotes?: string;
-  aiSuggestions: SessionAISuggestions;
-}
+import { Session } from "@/types/sessions";
+import { getSession, generateSessionAnalysis } from "@/api/sessions";
 
 const useStyles = makeStyles({
   container: {
@@ -157,93 +120,57 @@ const useStyles = makeStyles({
   },
 });
 
-export default function SessionDetail({ params }: { params: { id: string } }) {
+export default function SessionDetail({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
   const styles = useStyles();
   const router = useRouter();
-  const sessionId = params.id;
+  const { id: sessionId } = use(params);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [generating, setGenerating] = useState<boolean>(false);
   const [selectedTab, setSelectedTab] = useState<string>("details");
 
   useEffect(() => {
-    // Fetch session details - in a real app, this would hit your API
-    const fetchSession = async () => {
+    const loadSession = async () => {
       try {
-        // Simulating API call with timeout
-        setTimeout(() => {
-          // Mock data based on our enhanced model
-          const sessionData: Session = {
-            id: sessionId,
-            title: "Initial Assessment Meeting",
-            coachId: "coach-123",
-            coachName: "Maria González",
-            participantId: "participant-456",
-            participantName: "Juan Pérez",
-            date: "2023-11-15T14:00:00Z",
-            startTime: "14:00",
-            endTime: "15:30",
-            status: "completed",
-            type: "assessment",
-            location: "Office 302",
-            notes:
-              "Juan showed interest in retail positions. He has previous experience at a local store. He mentioned he'd like to work in an environment where he can interact with customers. His family is willing to support him with transportation during the first few months.",
-            topics: [
-              "Skills assessment",
-              "Employment history",
-              "Job preferences",
-            ],
-            goals: [
-              "Identify 3 potential job matches",
-              "Complete skills assessment",
-            ],
-            nextSteps: ["Schedule skills training", "Research retail openings"],
-            completedSteps: ["Initial evaluation", "Document registration"],
-            progressNotes:
-              "Juan demonstrates good progress in communication skills",
-            aiSuggestions: {
-              recommendedTopics: [
-                "Communication skills",
-                "Interview preparation",
-              ],
-              sentimentAnalysis: {
-                positive: [
-                  "Excited about new opportunities",
-                  "Confident in technical abilities",
-                ],
-                negative: [
-                  "Concerned about transportation",
-                  "Anxious about interviews",
-                ],
-              },
-              jobRecommendations: [
-                {
-                  id: "job-789",
-                  title: "Sales Assistant - Department Store",
-                  match: 92,
-                  reason:
-                    "Compatible with previous experience and communication skills",
-                },
-                {
-                  id: "job-456",
-                  title: "Customer Service Assistant",
-                  match: 85,
-                  reason: "Interactive environment that matches preferences",
-                },
-              ],
-            },
-          };
-
-          setSession(sessionData);
-          setLoading(false);
-        }, 1000);
-      } catch (error) {
-        console.error("Error fetching session data:", error);
+        setLoading(true);
+        const data = await getSession(sessionId);
+        setSession(data);
+        setError(null);
+      } catch (err) {
+        console.error("Error loading session:", err);
+        setError("Could not load session information. Please try again later.");
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchSession();
-  }, [sessionId]); // Use the unwrapped sessionId instead of params.id
+    loadSession();
+  }, [sessionId]);
+
+  const handleGenerateAnalysis = async () => {
+    try {
+      setGenerating(true);
+      const analysis = await generateSessionAnalysis(sessionId);
+
+      // Update the session with new analysis
+      if (session) {
+        setSession({
+          ...session,
+          aiSuggestions: analysis,
+        });
+      }
+    } catch (err) {
+      console.error("Error generating analysis:", err);
+      // Handle error - could show a notification
+    } finally {
+      setGenerating(false);
+    }
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -309,11 +236,20 @@ export default function SessionDetail({ params }: { params: { id: string } }) {
     );
   }
 
-  if (!session) {
+  if (error || !session) {
     return (
       <div className={styles.container}>
         <Card>
-          <Text weight="semibold">Could not load session information.</Text>
+          <Text weight="semibold">
+            {error || "Could not load session information."}
+          </Text>
+          <Button
+            appearance="primary"
+            onClick={() => router.push("/sessions")}
+            style={{ marginTop: "16px" }}
+          >
+            Return to Sessions
+          </Button>
         </Card>
       </div>
     );
@@ -468,14 +404,26 @@ export default function SessionDetail({ params }: { params: { id: string } }) {
               <div
                 style={{
                   display: "flex",
+                  justifyContent: "space-between",
                   alignItems: "center",
                   marginBottom: "12px",
                 }}
               >
-                <Brain24Regular />
-                <Text weight="semibold" style={{ marginLeft: "8px" }}>
-                  AI Analysis
-                </Text>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <Brain24Regular />
+                  <Text weight="semibold" style={{ marginLeft: "8px" }}>
+                    AI Analysis
+                  </Text>
+                </div>
+                <Button
+                  onClick={handleGenerateAnalysis}
+                  disabled={generating}
+                  icon={
+                    generating ? <Spinner size="tiny" /> : <Brain24Regular />
+                  }
+                >
+                  {generating ? "Generating..." : "Generate New Analysis"}
+                </Button>
               </div>
 
               <div className={styles.grid}>

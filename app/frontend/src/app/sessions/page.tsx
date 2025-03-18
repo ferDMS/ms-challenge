@@ -42,69 +42,8 @@ import {
   ArrowSortRegular,
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
-
-// Enhancing mock data with participant avatars and IDs
-const mockSessions = [
-  {
-    id: "1",
-    title: "Initial Assessment",
-    participantId: "p-001",
-    participantName: "Juan Pérez",
-    participantAvatar: null, // Will use fallback
-    date: "2025-03-19T10:00:00Z", // Updated date
-    startTime: "10:00",
-    endTime: "11:30",
-    status: "completed",
-    type: "assessment",
-    location: "Office A",
-  },
-  {
-    id: "2",
-    title: "Career Planning",
-    participantId: "p-002",
-    participantName: "María González",
-    participantAvatar: "https://i.pravatar.cc/150?img=47",
-    date: "2025-03-20T14:00:00Z", // Updated date
-    startTime: "14:00",
-    endTime: "15:00",
-    status: "scheduled",
-    type: "follow-up",
-    location: "Virtual",
-  },
-  {
-    id: "3",
-    title: "Job Interview Preparation",
-    participantName: "Carlos Rodríguez",
-    date: "2025-03-20T11:00:00Z", // Updated date
-    startTime: "11:00",
-    endTime: "12:30",
-    status: "completed",
-    type: "training",
-    location: "Office B",
-  },
-  {
-    id: "4",
-    title: "Skills Assessment",
-    participantName: "Ana Martínez",
-    date: "2025-03-21T09:00:00Z", // Updated date
-    startTime: "09:00",
-    endTime: "10:30",
-    status: "scheduled",
-    type: "assessment",
-    location: "Office A",
-  },
-  {
-    id: "5",
-    title: "Job Matching Discussion",
-    participantName: "Roberto Díaz",
-    date: "2025-03-22T15:00:00Z", // Updated date
-    startTime: "15:00",
-    endTime: "16:00",
-    status: "cancelled",
-    type: "job-matching",
-    location: "Virtual",
-  },
-];
+import { getSessions } from "@/api/sessions"; // Updated import path
+import { SessionPreview, SessionFilters } from "../../types/sessions";
 
 // Styles for the page with FluentUI v2 styling system
 const useStyles = makeStyles({
@@ -197,15 +136,17 @@ type SortDirection = "asc" | "desc" | undefined;
 
 // Type for sort columns
 interface SortConfig {
-  key: string;
+  key: keyof SessionPreview;
   direction: SortDirection;
 }
 
 export default function SessionsPage() {
   const styles = useStyles();
   const router = useRouter();
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [filteredSessions, setFilteredSessions] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<SessionPreview[]>([]);
+  const [filteredSessions, setFilteredSessions] = useState<SessionPreview[]>(
+    []
+  );
   const [searchText, setSearchText] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedType, setSelectedType] = useState<string>("all");
@@ -254,17 +195,28 @@ export default function SessionsPage() {
     const loadSessions = async () => {
       try {
         setIsLoading(true);
-        // In a real app, this would be an API call
-        // const response = await fetch('/api/sessions');
-        // const data = await response.json();
 
-        // Using mock data for now
-        setTimeout(() => {
-          setSessions(mockSessions);
-          setFilteredSessions(mockSessions);
-          setIsLoading(false);
-        }, 800); // Simulate network delay
+        // Create filters object based on selected filters
+        const filters: {
+          status?: string;
+          type?: string;
+          date?: string;
+        } = {};
+
+        if (selectedStatus !== "all") filters.status = selectedStatus;
+        if (selectedType !== "all") filters.type = selectedType;
+        if (selectedDate) {
+          // Format date as YYYY-MM-DD for API
+          filters.date = selectedDate.toISOString().split("T")[0];
+        }
+
+        // Fetch data from API using the imported getSessions function
+        const data = await getSessions(filters);
+        setSessions(data);
+        setFilteredSessions(data);
+        setIsLoading(false);
       } catch (err) {
+        console.error("Error loading sessions:", err);
         setError("Failed to load sessions. Please try again.");
         setShowErrorToast(true);
         setIsLoading(false);
@@ -272,9 +224,9 @@ export default function SessionsPage() {
     };
 
     loadSessions();
-  }, []);
+  }, [selectedStatus, selectedType, selectedDate]); // Re-fetch when filters change
 
-  // Apply filters when they change
+  // Apply search filter client-side
   useEffect(() => {
     if (sessions.length === 0) return;
 
@@ -291,29 +243,6 @@ export default function SessionsPage() {
       );
     }
 
-    // Apply status filter
-    if (selectedStatus !== "all") {
-      result = result.filter((session) => session.status === selectedStatus);
-    }
-
-    // Apply type filter
-    if (selectedType !== "all") {
-      result = result.filter((session) => session.type === selectedType);
-    }
-
-    // Apply date filter - Fix to ensure proper date comparison
-    if (selectedDate) {
-      // Use a normalized string format for comparison (YYYY-MM-DD)
-      const filterDateString = selectedDate.toISOString().split("T")[0];
-
-      result = result.filter((session) => {
-        // Normalize the session date the same way
-        const sessionDate = new Date(session.date);
-        const sessionDateString = sessionDate.toISOString().split("T")[0];
-        return sessionDateString === filterDateString;
-      });
-    }
-
     // Apply sorting
     if (sortConfig.key && sortConfig.direction) {
       result.sort((a, b) => {
@@ -325,10 +254,12 @@ export default function SessionsPage() {
         }
 
         // For string comparison
-        if (a[sortConfig.key] < b[sortConfig.key]) {
+        const aValue = String(a[sortConfig.key]);
+        const bValue = String(b[sortConfig.key]);
+        if (aValue < bValue) {
           return sortConfig.direction === "asc" ? -1 : 1;
         }
-        if (a[sortConfig.key] > b[sortConfig.key]) {
+        if (aValue > bValue) {
           return sortConfig.direction === "asc" ? 1 : -1;
         }
         return 0;
@@ -336,14 +267,7 @@ export default function SessionsPage() {
     }
 
     setFilteredSessions(result);
-  }, [
-    searchText,
-    selectedStatus,
-    selectedType,
-    selectedDate,
-    sessions,
-    sortConfig,
-  ]);
+  }, [searchText, sessions, sortConfig]);
 
   // Handler functions
   const handleSearchChange = (ev: React.ChangeEvent<HTMLInputElement>) => {
@@ -385,7 +309,7 @@ export default function SessionsPage() {
     }
   };
 
-  // Update clearFilters to also clear dateInputValue
+  // Update clearFilters to trigger a new fetch
   const clearFilters = () => {
     setSearchText("");
     setSelectedStatus("all");
@@ -438,7 +362,7 @@ export default function SessionsPage() {
       }
     }
 
-    setSortConfig({ key, direction });
+    setSortConfig({ key: key as keyof SessionPreview, direction });
   };
 
   // Get sort icon based on current sort state
@@ -470,13 +394,6 @@ export default function SessionsPage() {
           New Session
         </Button>
       </div>
-
-      {/* {showErrorToast && error && (
-        <Toast appearance="error" onDismiss={() => setShowErrorToast(false)}>
-          <ToastTitle>Error</ToastTitle>
-          <ToastBody>{error}</ToastBody>
-        </Toast>
-      )} */}
 
       <div className={styles.filtersContainer}>
         <Field label="Search">
