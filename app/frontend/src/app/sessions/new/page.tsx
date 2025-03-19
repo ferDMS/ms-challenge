@@ -201,6 +201,8 @@ export default function SessionRegister() {
     _: React.SyntheticEvent,
     data: { selectedOptions: string[] }
   ) => {
+    if (!data.selectedOptions.length) return;
+
     const value = data.selectedOptions[0];
 
     if (field === "participantId") {
