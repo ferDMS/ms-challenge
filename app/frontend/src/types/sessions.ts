@@ -1,3 +1,14 @@
+// Type for tag input fields
+export type TagInputType = "topics" | "goals";
+
+// Type for session types
+export type SessionType =
+  | "initial"
+  | "follow-up"
+  | "assessment"
+  | "training"
+  | "job-matching";
+
 export interface SessionAISuggestions {
   recommendedTopics: string[];
   sentimentAnalysis: {
@@ -10,6 +21,7 @@ export interface SessionAISuggestions {
     match: number;
     reason: string;
   }[];
+  summary: string;
 }
 
 export interface Session {
@@ -23,13 +35,11 @@ export interface Session {
   startTime: string;
   endTime: string;
   status: "scheduled" | "completed" | "cancelled";
-  type: "initial" | "follow-up" | "assessment" | "training" | "job-matching";
+  type: SessionType;
   location: string;
   notes: string;
   topics: string[];
   goals: string[];
-  nextSteps: string[];
-  completedSteps?: string[];
   progressNotes?: string;
   aiSuggestions: SessionAISuggestions;
 }
@@ -57,13 +67,6 @@ export interface SessionFilters {
   date?: string;
 }
 
-export interface SessionObservation {
-  notes: string;
-  progressNotes?: string;
-  completedSteps?: string[];
-  nextSteps?: string[];
-}
-
 export interface SessionAnalysis {
   recommendedTopics: string[];
   sentimentAnalysis: {
@@ -76,4 +79,5 @@ export interface SessionAnalysis {
     match: number;
     reason: string;
   }[];
+  summary: string;
 }

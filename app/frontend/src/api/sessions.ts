@@ -1,10 +1,5 @@
 import { callAPI } from "@/utils/api";
-import {
-  Session,
-  SessionObservation,
-  SessionAnalysis,
-  SessionPreview,
-} from "@/types/sessions";
+import { Session, SessionAnalysis, SessionPreview } from "@/types/sessions";
 
 /**
  * Get all sessions with optional filters
@@ -60,11 +55,11 @@ export async function deleteSession(id: string) {
  */
 export async function addSessionObservations(
   id: string,
-  observations: SessionObservation
+  observations: { notes: string }
 ) {
   return callAPI<Session>(`/api/sessions/${id}/observations`, {
     method: "POST",
-    data: observations as unknown as Record<string, unknown>,
+    data: observations,
   });
 }
 
