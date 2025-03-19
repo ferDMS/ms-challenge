@@ -5,6 +5,7 @@ import {
   Button,
   Input,
   Text,
+  Title2,
   makeStyles,
   tokens,
   Link,
@@ -370,9 +371,7 @@ export default function SessionsPage() {
   return (
     <div className={styles.page}>
       <div className={styles.header}>
-        <Text size={600} weight="semibold" className={styles.title}>
-          Sessions
-        </Text>
+        <Title2>Sessions</Title2>
         <Button
           appearance="primary"
           icon={<AddRegular />}

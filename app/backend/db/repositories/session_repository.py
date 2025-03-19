@@ -95,26 +95,12 @@ class SessionRepository:
             if not session:
                 return None
                 
-            # Update the notes field
+            # Update the notes field only
             if "notes" in observations_data:
                 if session["notes"]:
                     session["notes"] += f"\n\n{observations_data['notes']}"
                 else:
                     session["notes"] = observations_data["notes"]
-            
-            # Add any additional observations
-            if "progressNotes" in observations_data:
-                session["progressNotes"] = observations_data["progressNotes"]
-            
-            if "completedSteps" in observations_data and observations_data["completedSteps"]:
-                if "completedSteps" not in session:
-                    session["completedSteps"] = []
-                session["completedSteps"].extend(observations_data["completedSteps"])
-            
-            if "nextSteps" in observations_data and observations_data["nextSteps"]:
-                if "nextSteps" not in session:
-                    session["nextSteps"] = []
-                session["nextSteps"].extend(observations_data["nextSteps"])
             
             # Update the session
             return self.update_session(session_id, session)

@@ -66,9 +66,6 @@ def create_session():
         "notes": data.get("notes", ""),
         "topics": data.get("topics", []),
         "goals": data.get("goals", []),
-        "nextSteps": data.get("nextSteps", []),
-        "completedSteps": data.get("completedSteps", []),
-        "progressNotes": data.get("progressNotes", ""),
         "aiSuggestions": data.get("aiSuggestions", {
             "recommendedTopics": [],
             "sentimentAnalysis": {
@@ -137,7 +134,7 @@ def add_observations(session_id):
     if "notes" not in data:
         return jsonify({"error": "Missing required field: notes"}), 400
     
-    # Use repository to add observations
+    # Use repository to add observations (notes only)
     updated_session = session_repository.add_observations(session_id, data)
     
     if not updated_session:
