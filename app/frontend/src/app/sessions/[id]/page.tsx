@@ -17,6 +17,12 @@ import {
   Link,
   InfoLabel,
   Avatar,
+  Textarea,
+  Input,
+  TagGroup,
+  Toast,
+  ToastTitle,
+  useToastController,
 } from "@fluentui/react-components";
 import {
   DocumentBulletList24Regular,
@@ -27,9 +33,12 @@ import {
   CalendarClock24Regular,
   ArrowLeft24Filled,
   Lightbulb24Regular,
+  CheckmarkRegular,
+  DeleteRegular,
+  AddRegular,
 } from "@fluentui/react-icons";
 import { Session } from "@/types/sessions";
-import { getSession } from "@/api/sessions";
+import { getSession, updateSession } from "@/api/sessions";
 
 const useStyles = makeStyles({
   container: {
@@ -149,6 +158,31 @@ const useStyles = makeStyles({
     backgroundColor: tokens.colorPaletteDarkOrangeBackground1,
     color: tokens.colorPaletteDarkOrangeForeground1,
   },
+  editableHeader: {
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    width: "100%",
+  },
+  editButton: {
+    minWidth: "unset",
+    height: "unset",
+  },
+  tagEditContainer: {
+    marginTop: "12px",
+    display: "flex",
+    flexWrap: "wrap",
+    gap: "8px",
+  },
+  addInputRow: {
+    display: "flex",
+    gap: "8px",
+    marginTop: "8px",
+    alignItems: "center",
+  },
+  tagInput: {
+    flexGrow: 1,
+  },
 });
 
 export default function SessionDetail({
@@ -162,6 +196,24 @@ export default function SessionDetail({
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const toastController = useToastController();
+
+  // States for editing
+  const [isEditingNotes, setIsEditingNotes] = useState(false);
+  const [isEditingTopics, setIsEditingTopics] = useState(false);
+  const [isEditingGoals, setIsEditingGoals] = useState(false);
+
+  // Temporary states to hold edited values
+  const [editedNotes, setEditedNotes] = useState("");
+  const [editedTopics, setEditedTopics] = useState<string[]>([]);
+  const [editedGoals, setEditedGoals] = useState<string[]>([]);
+
+  // State for new tag inputs
+  const [newTopic, setNewTopic] = useState("");
+  const [newGoal, setNewGoal] = useState("");
+
+  // Saving state
+  const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
     const loadSession = async () => {
@@ -169,6 +221,12 @@ export default function SessionDetail({
         setLoading(true);
         const data = await getSession(sessionId);
         setSession(data);
+
+        // Initialize edit states with current values
+        setEditedNotes(data.notes);
+        setEditedTopics([...data.topics]);
+        setEditedGoals([...data.goals]);
+
         setError(null);
       } catch (err) {
         console.error("Error loading session:", err);
@@ -180,6 +238,183 @@ export default function SessionDetail({
 
     loadSession();
   }, [sessionId]);
+
+  // Toggle edit mode handlers
+  const toggleEditNotes = () => {
+    if (isEditingNotes) {
+      saveNotes();
+    } else {
+      setIsEditingNotes(true);
+    }
+  };
+
+  const toggleEditTopics = () => {
+    if (isEditingTopics) {
+      saveTopics();
+    } else {
+      setIsEditingTopics(true);
+    }
+  };
+
+  const toggleEditGoals = () => {
+    if (isEditingGoals) {
+      saveGoals();
+    } else {
+      setIsEditingGoals(true);
+    }
+  };
+
+  // Save handlers
+  const saveNotes = async () => {
+    if (!session) return;
+
+    setIsSaving(true);
+    try {
+      // Create a copy of the full session and update only the notes field
+      const updatedSessionData = {
+        ...session,
+        notes: editedNotes,
+      };
+
+      const updatedSession = await updateSession(sessionId, updatedSessionData);
+
+      setSession(updatedSession);
+      setIsEditingNotes(false);
+      showSuccessToast("Notes updated successfully");
+    } catch (err) {
+      console.error("Error saving notes:", err);
+      showErrorToast("Failed to update notes");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const saveTopics = async () => {
+    if (!session) return;
+
+    setIsSaving(true);
+    try {
+      // Create a copy of the full session and update only the topics field
+      const updatedSessionData = {
+        ...session,
+        topics: editedTopics,
+      };
+
+      const updatedSession = await updateSession(sessionId, updatedSessionData);
+
+      setSession(updatedSession);
+      setIsEditingTopics(false);
+      showSuccessToast("Topics updated successfully");
+    } catch (err) {
+      console.error("Error saving topics:", err);
+      showErrorToast("Failed to update topics");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const saveGoals = async () => {
+    if (!session) return;
+
+    setIsSaving(true);
+    try {
+      // Create a copy of the full session and update only the goals field
+      const updatedSessionData = {
+        ...session,
+        goals: editedGoals,
+      };
+
+      const updatedSession = await updateSession(sessionId, updatedSessionData);
+
+      setSession(updatedSession);
+      setIsEditingGoals(false);
+      showSuccessToast("Goals updated successfully");
+    } catch (err) {
+      console.error("Error saving goals:", err);
+      showErrorToast("Failed to update goals");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Mark session as completed
+  const markAsCompleted = async () => {
+    if (!session) return;
+
+    setIsSaving(true);
+    try {
+      const updatedSessionData = {
+        ...session,
+        status: "completed" as "scheduled" | "completed" | "cancelled",
+      };
+
+      const updatedSession = await updateSession(sessionId, updatedSessionData);
+
+      setSession(updatedSession);
+      showSuccessToast("Session marked as completed");
+    } catch (err) {
+      console.error("Error updating session status:", err);
+      showErrorToast("Failed to update session status");
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  // Topic and goal handlers
+  const addTopic = () => {
+    if (newTopic.trim() && !editedTopics.includes(newTopic.trim())) {
+      setEditedTopics([...editedTopics, newTopic.trim()]);
+      setNewTopic("");
+    }
+  };
+
+  const removeTopic = (topic: string) => {
+    setEditedTopics(editedTopics.filter((t) => t !== topic));
+  };
+
+  const addGoal = () => {
+    if (newGoal.trim() && !editedGoals.includes(newGoal.trim())) {
+      setEditedGoals([...editedGoals, newGoal.trim()]);
+      setNewGoal("");
+    }
+  };
+
+  const removeGoal = (goal: string) => {
+    setEditedGoals(editedGoals.filter((g) => g !== goal));
+  };
+
+  const handleTopicKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addTopic();
+    }
+  };
+
+  const handleGoalKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      addGoal();
+    }
+  };
+
+  // Toast helpers
+  const showSuccessToast = (message: string) => {
+    toastController.dispatchToast(
+      <Toast>
+        <ToastTitle>{message}</ToastTitle>
+      </Toast>,
+      { intent: "success" }
+    );
+  };
+
+  const showErrorToast = (message: string) => {
+    toastController.dispatchToast(
+      <Toast>
+        <ToastTitle>{message}</ToastTitle>
+      </Toast>,
+      { intent: "error" }
+    );
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -291,9 +526,16 @@ export default function SessionDetail({
         </div>
         <div className={styles.headerActions}>
           <Button icon={<Calendar24Regular />}>Schedule Follow-up</Button>
-          <Button icon={<EditRegular />} appearance="primary">
-            Edit Session
-          </Button>
+          {session.status !== "completed" && (
+            <Button
+              appearance="primary"
+              icon={<CheckmarkCircle24Filled />}
+              onClick={markAsCompleted}
+              disabled={isSaving}
+            >
+              Mark as Completed
+            </Button>
+          )}
         </div>
       </div>
 
@@ -366,12 +608,32 @@ export default function SessionDetail({
         {/* Session Notes Card */}
         <Card>
           <div className={styles.cardContent}>
-            <InfoLabel weight="semibold">Session Notes</InfoLabel>
-            <div className={styles.infoItem}>
-              <Text style={{ marginTop: "12px", lineHeight: "1.5" }}>
-                {session.notes}
-              </Text>
+            <div className={styles.editableHeader}>
+              <InfoLabel weight="semibold">Session Notes</InfoLabel>
+              <Button
+                appearance="subtle"
+                className={styles.editButton}
+                icon={isEditingNotes ? <CheckmarkRegular /> : <EditRegular />}
+                onClick={toggleEditNotes}
+                disabled={isSaving}
+              />
             </div>
+
+            {isEditingNotes ? (
+              <Textarea
+                value={editedNotes}
+                onChange={(e) => setEditedNotes(e.target.value)}
+                style={{ marginTop: "12px", width: "100%", height: "150px" }}
+                placeholder="Enter session notes..."
+                disabled={isSaving}
+              />
+            ) : (
+              <div className={styles.infoItem}>
+                <Text style={{ marginTop: "12px", lineHeight: "1.5" }}>
+                  {session.notes || <i>No notes recorded for this session.</i>}
+                </Text>
+              </div>
+            )}
           </div>
         </Card>
       </div>
@@ -380,26 +642,157 @@ export default function SessionDetail({
       <div className={styles.grid} style={{ marginTop: "16px" }}>
         <Card>
           <div className={styles.cardContent}>
-            <InfoLabel weight="semibold">Topics Covered</InfoLabel>
-            <div className={styles.tagContainer}>
-              {session.topics.map((topic, index) => (
-                <Tag key={index} appearance="brand">
-                  <DocumentBulletList24Regular />
-                  {topic}
-                </Tag>
-              ))}
+            <div className={styles.editableHeader}>
+              <InfoLabel weight="semibold">Topics Covered</InfoLabel>
+              <Button
+                appearance="subtle"
+                className={styles.editButton}
+                icon={isEditingTopics ? <CheckmarkRegular /> : <EditRegular />}
+                onClick={toggleEditTopics}
+                disabled={isSaving}
+              />
             </div>
+
+            {isEditingTopics ? (
+              <>
+                <div className={styles.tagEditContainer}>
+                  <TagGroup
+                    onDismiss={(_e, { value }) => {
+                      // Remove the topic that matches the value
+                      removeTopic(value as string);
+                    }}
+                  >
+                    {editedTopics.map((topic, index) => (
+                      <Tag
+                        key={index}
+                        dismissible
+                        dismissIcon={
+                          <DeleteRegular aria-label="remove topic" />
+                        }
+                        value={topic} // Add value prop to identify which tag was dismissed
+                      >
+                        <DocumentBulletList24Regular />
+                        {topic}
+                      </Tag>
+                    ))}
+                  </TagGroup>
+                </div>
+                <div className={styles.addInputRow}>
+                  <Input
+                    className={styles.tagInput}
+                    placeholder="Add new topic"
+                    value={newTopic}
+                    onChange={(e) => setNewTopic(e.target.value)}
+                    onKeyPress={handleTopicKeyPress}
+                    disabled={isSaving}
+                  />
+                  <Button
+                    appearance="secondary"
+                    icon={<AddRegular />}
+                    onClick={addTopic}
+                    disabled={isSaving}
+                  >
+                    Add
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.tagContainer}>
+                {session.topics.length > 0 ? (
+                  session.topics.map((topic, index) => (
+                    <Tag key={index} appearance="brand">
+                      <DocumentBulletList24Regular />
+                      {topic}
+                    </Tag>
+                  ))
+                ) : (
+                  <Text
+                    size={200}
+                    style={{
+                      fontStyle: "italic",
+                      color: tokens.colorNeutralForeground3,
+                    }}
+                  >
+                    No topics recorded for this session.
+                  </Text>
+                )}
+              </div>
+            )}
           </div>
         </Card>
 
         <Card>
           <div className={styles.cardContent}>
-            <InfoLabel weight="semibold">Goals</InfoLabel>
-            <div className={styles.tagContainer}>
-              {session.goals.map((goal, index) => (
-                <Tag key={index}>{goal}</Tag>
-              ))}
+            <div className={styles.editableHeader}>
+              <InfoLabel weight="semibold">Goals</InfoLabel>
+              <Button
+                appearance="subtle"
+                className={styles.editButton}
+                icon={isEditingGoals ? <CheckmarkRegular /> : <EditRegular />}
+                onClick={toggleEditGoals}
+                disabled={isSaving}
+              />
             </div>
+
+            {isEditingGoals ? (
+              <>
+                <div className={styles.tagEditContainer}>
+                  <TagGroup
+                    onDismiss={(_e, { value }) => {
+                      // Remove the goal that matches the value
+                      removeGoal(value as string);
+                    }}
+                  >
+                    {editedGoals.map((goal, index) => (
+                      <Tag
+                        key={index}
+                        dismissible
+                        dismissIcon={<DeleteRegular aria-label="remove goal" />}
+                        value={goal} // Add value prop to identify which tag was dismissed
+                      >
+                        {goal}
+                      </Tag>
+                    ))}
+                  </TagGroup>
+                </div>
+                <div className={styles.addInputRow}>
+                  <Input
+                    className={styles.tagInput}
+                    placeholder="Add new goal"
+                    value={newGoal}
+                    onChange={(e) => setNewGoal(e.target.value)}
+                    onKeyPress={handleGoalKeyPress}
+                    disabled={isSaving}
+                  />
+                  <Button
+                    appearance="secondary"
+                    icon={<AddRegular />}
+                    onClick={addGoal}
+                    disabled={isSaving}
+                  >
+                    Add
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className={styles.tagContainer}>
+                {session.goals.length > 0 ? (
+                  session.goals.map((goal, index) => (
+                    <Tag key={index}>{goal}</Tag>
+                  ))
+                ) : (
+                  <Text
+                    size={200}
+                    style={{
+                      fontStyle: "italic",
+                      color: tokens.colorNeutralForeground3,
+                    }}
+                  >
+                    No goals recorded for this session.
+                  </Text>
+                )}
+              </div>
+            )}
           </div>
         </Card>
       </div>
