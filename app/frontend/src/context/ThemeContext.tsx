@@ -1,21 +1,10 @@
 "use client";
 
-import React, {
-  createContext,
-  useContext,
-  useState,
-  useEffect,
-  ReactNode,
-} from "react";
-import {
-  FluentProvider,
-  webLightTheme,
-  webDarkTheme,
-} from "@fluentui/react-components";
+import React, { createContext, useContext, ReactNode } from "react";
+import { FluentProvider, webLightTheme } from "@fluentui/react-components";
 
 interface ThemeContextType {
-  isDarkMode: boolean;
-  toggleTheme: () => void;
+  isDarkMode: boolean; // Keeping this for API compatibility
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -31,32 +20,14 @@ export const useTheme = () => {
 export const ThemeProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
+  // Always set isDarkMode to false
+  const isDarkMode = false;
 
-  useEffect(() => {
-    // Check for saved preference or system preference
-    const darkModePreferred = window.matchMedia(
-      "(prefers-color-scheme: dark)"
-    ).matches;
-    const savedPreference = localStorage.getItem("darkMode");
-
-    setIsDarkMode(
-      savedPreference === "true" ||
-        (savedPreference === null && darkModePreferred)
-    );
-  }, []);
-
-  const toggleTheme = () => {
-    const newValue = !isDarkMode;
-    setIsDarkMode(newValue);
-    localStorage.setItem("darkMode", String(newValue));
-  };
-
-  // Using the default web themes from Fluent UI
-  const theme = isDarkMode ? webDarkTheme : webLightTheme;
+  // Always use the light theme
+  const theme = webLightTheme;
 
   return (
-    <ThemeContext.Provider value={{ isDarkMode, toggleTheme }}>
+    <ThemeContext.Provider value={{ isDarkMode }}>
       <FluentProvider theme={theme}>{children}</FluentProvider>
     </ThemeContext.Provider>
   );
