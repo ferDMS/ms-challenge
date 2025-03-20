@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   tokens,
@@ -9,7 +9,7 @@ import {
   CardHeader,
   Button,
   Input,
-  Dropdown,
+  Combobox,
   Option,
   Textarea,
   Field,
@@ -36,12 +36,17 @@ import {
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { createSession } from "@/api/sessions";
+import { getParticipants } from "@/api/participants"; // Import the getParticipants function
 import {
   Session,
   SessionAISuggestions,
   TagInputType,
   SessionType,
-} from "@/types/sessions"; // Import the moved types
+  SessionStatus,
+  getDisplayValue,
+  getOptionsForField,
+} from "@/types/sessions";
+import { ParticipantPreview } from "@/types/participants"; // Import the ParticipantPreview type
 
 const useStyles = makeStyles({
   container: {
@@ -149,7 +154,7 @@ export default function SessionRegister() {
     date: new Date(),
     startTime: "",
     endTime: "",
-    status: "scheduled" as "scheduled" | "completed" | "cancelled", // Default status for new sessions
+    status: "scheduled" as SessionStatus, // Default status for new sessions
     type: "" as SessionType | "", // Properly type this to allow empty string initially but enforce correct values when set
     location: "",
     notes: "",
@@ -167,12 +172,32 @@ export default function SessionRegister() {
     return `${year}-${month}-${day}`;
   });
 
-  // Mock list of participants (in a real app, this would come from an API)
-  const [participants] = useState([
-    { id: "participant-123", name: "Juan Pérez" },
-    { id: "participant-456", name: "Ana López" },
-    { id: "participant-789", name: "Carlos Rodríguez" },
-  ]);
+  // Participants state from API
+  const [participants, setParticipants] = useState<ParticipantPreview[]>([]);
+  const [isLoadingParticipants, setIsLoadingParticipants] = useState(true);
+
+  // Fetch participants when component mounts
+  useEffect(() => {
+    const loadParticipants = async () => {
+      try {
+        setIsLoadingParticipants(true);
+        const data = await getParticipants();
+        setParticipants(data);
+      } catch (error) {
+        console.error("Error loading participants:", error);
+        toastController.dispatchToast(
+          <Toast>
+            <ToastTitle>Failed to load participants</ToastTitle>
+          </Toast>,
+          { intent: "error" }
+        );
+      } finally {
+        setIsLoadingParticipants(false);
+      }
+    };
+
+    loadParticipants();
+  }, [toastController]);
 
   // Form state for tag inputs
   const [tagInputs, setTagInputs] = useState({
@@ -195,8 +220,8 @@ export default function SessionRegister() {
     }
   };
 
-  // Handle dropdown changes
-  const handleDropdownChange = (
+  // Handle combobox changes
+  const handleComboboxChange = (
     field: string,
     _: React.SyntheticEvent,
     data: { selectedOptions: string[] }
@@ -210,7 +235,7 @@ export default function SessionRegister() {
       setFormState((prevState) => ({
         ...prevState,
         participantId: value,
-        participantName: selected ? selected.name : "",
+        participantName: selected ? selected.fullName : "",
       }));
     } else {
       setFormState((prevState) => ({ ...prevState, [field]: value }));
@@ -410,6 +435,14 @@ export default function SessionRegister() {
     );
   }
 
+  if (isLoadingParticipants) {
+    return (
+      <div className={styles.spinner}>
+        <Spinner label="Loading participants..." />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -453,22 +486,23 @@ export default function SessionRegister() {
                 validationMessage={errors.participantId}
                 validationState={errors.participantId ? "error" : "none"}
               >
-                <Dropdown
+                <Combobox
                   id={participantId}
                   placeholder="Select participant"
                   selectedOptions={
                     formState.participantId ? [formState.participantId] : []
                   }
+                  value={formState.participantName}
                   onOptionSelect={(e, data) =>
-                    handleDropdownChange("participantId", e, data)
+                    handleComboboxChange("participantId", e, data)
                   }
                 >
                   {participants.map((participant) => (
                     <Option key={participant.id} value={participant.id}>
-                      {participant.name}
+                      {participant.fullName}
                     </Option>
                   ))}
-                </Dropdown>
+                </Combobox>
               </Field>
 
               <Field
@@ -523,18 +557,21 @@ export default function SessionRegister() {
               </Field>
 
               <Field label="Status" required>
-                <Dropdown
+                <Combobox
                   id={statusId}
                   placeholder="Select status"
                   selectedOptions={[formState.status]}
+                  value={getDisplayValue("sessionStatus", formState.status)}
                   onOptionSelect={(e, data) =>
-                    handleDropdownChange("status", e, data)
+                    handleComboboxChange("status", e, data)
                   }
                 >
-                  <Option value="scheduled">Scheduled</Option>
-                  <Option value="completed">Completed</Option>
-                  <Option value="cancelled">Cancelled</Option>
-                </Dropdown>
+                  {getOptionsForField("sessionStatus").map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.text}
+                    </Option>
+                  ))}
+                </Combobox>
               </Field>
 
               <Field
@@ -543,20 +580,25 @@ export default function SessionRegister() {
                 validationMessage={errors.type}
                 validationState={errors.type ? "error" : "none"}
               >
-                <Dropdown
+                <Combobox
                   id={typeId}
                   placeholder="Select session type"
                   selectedOptions={formState.type ? [formState.type] : []}
+                  value={
+                    formState.type
+                      ? getDisplayValue("sessionType", formState.type)
+                      : ""
+                  }
                   onOptionSelect={(e, data) =>
-                    handleDropdownChange("type", e, data)
+                    handleComboboxChange("type", e, data)
                   }
                 >
-                  <Option value="initial">Initial</Option>
-                  <Option value="follow-up">Follow-up</Option>
-                  <Option value="assessment">Assessment</Option>
-                  <Option value="training">Training</Option>
-                  <Option value="job-matching">Job Matching</Option>
-                </Dropdown>
+                  {getOptionsForField("sessionType").map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.text}
+                    </Option>
+                  ))}
+                </Combobox>
               </Field>
 
               <Field

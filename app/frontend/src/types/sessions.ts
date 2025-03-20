@@ -9,6 +9,8 @@ export type SessionType =
   | "training"
   | "job-matching";
 
+export type SessionStatus = "scheduled" | "completed" | "cancelled";
+
 export interface SessionAISuggestions {
   recommendedTopics: string[];
   sentimentAnalysis: {
@@ -34,7 +36,7 @@ export interface Session {
   date: string;
   startTime: string;
   endTime: string;
-  status: "scheduled" | "completed" | "cancelled";
+  status: SessionStatus;
   type: SessionType;
   location: string;
   notes: string;
@@ -54,9 +56,11 @@ export interface SessionPreview {
   date: string;
   startTime: string;
   endTime: string;
-  status: "scheduled" | "completed" | "cancelled";
-  type: string;
+  status: SessionStatus;
+  type: SessionType;
   location: string;
+  coachId: string;
+  coachName: string;
 }
 
 export interface SessionFilters {
@@ -80,4 +84,52 @@ export interface SessionAnalysis {
     reason: string;
   }[];
   summary: string;
+}
+
+// Define display mappings for session fields
+export const SessionMappings = {
+  sessionType: {
+    initial: "Initial Session",
+    "follow-up": "Follow-up",
+    assessment: "Assessment",
+    training: "Training",
+    "job-matching": "Job Matching",
+  },
+  sessionStatus: {
+    scheduled: "Scheduled",
+    completed: "Completed",
+    cancelled: "Cancelled",
+  },
+};
+
+// Get display value for a field based on its key
+export function getDisplayValue(
+  field: keyof typeof SessionMappings,
+  value: string
+): string {
+  if (!value) return "";
+
+  const mapping = SessionMappings[field];
+  return mapping && mapping[value as keyof typeof mapping]
+    ? mapping[value as keyof typeof mapping]
+    : value;
+}
+
+// Get options for dropdown/combobox fields
+export function getOptionsForField(
+  field: keyof typeof SessionMappings
+): { text: string; value: string }[] {
+  const mapping = SessionMappings[field];
+  return Object.entries(mapping).map(([value, text]) => ({
+    text: text as string,
+    value,
+  }));
+}
+
+// Get key-value pairs for a field
+export function getKeyValuePairsForField(
+  field: keyof typeof SessionMappings
+): [string, string][] {
+  const mapping = SessionMappings[field];
+  return Object.entries(mapping);
 }

@@ -379,13 +379,13 @@ export default function ParticipantsPage() {
             id={statusId}
             value={
               selectedStatus === "all"
-                ? "All Statuses"
+                ? "All"
                 : getDisplayValue("employmentCycleStage", selectedStatus)
             }
             onOptionSelect={(_, data) => handleStatusChange(_, data)}
             size="medium"
           >
-            <Option value="all">All Statuses</Option>
+            <Option value="all">All</Option>
             {getOptionsForField("employmentCycleStage").map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.text}
@@ -400,13 +400,13 @@ export default function ParticipantsPage() {
             id={disabilityTypeId}
             value={
               selectedDisabilityType === "all"
-                ? "All Types"
+                ? "All"
                 : getDisplayValue("disabilityType", selectedDisabilityType)
             }
             onOptionSelect={(_, data) => handleDisabilityTypeChange(_, data)}
             size="medium"
           >
-            <Option value="all">All Types</Option>
+            <Option value="all">All</Option>
             {getOptionsForField("disabilityType").map((option) => (
               <Option key={option.value} value={option.value}>
                 {option.text}
