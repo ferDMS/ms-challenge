@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   makeStyles,
   tokens,
@@ -36,6 +36,7 @@ import {
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { createSession } from "@/api/sessions";
+import { getParticipants } from "@/api/participants"; // Import the getParticipants function
 import {
   Session,
   SessionAISuggestions,
@@ -44,7 +45,8 @@ import {
   SessionStatus,
   getDisplayValue,
   getOptionsForField,
-} from "@/types/sessions"; // Import the moved types
+} from "@/types/sessions";
+import { ParticipantPreview } from "@/types/participants"; // Import the ParticipantPreview type
 
 const useStyles = makeStyles({
   container: {
@@ -170,12 +172,32 @@ export default function SessionRegister() {
     return `${year}-${month}-${day}`;
   });
 
-  // Mock list of participants (in a real app, this would come from an API)
-  const [participants] = useState([
-    { id: "participant-123", name: "Juan Pérez" },
-    { id: "participant-456", name: "Ana López" },
-    { id: "participant-789", name: "Carlos Rodríguez" },
-  ]);
+  // Participants state from API
+  const [participants, setParticipants] = useState<ParticipantPreview[]>([]);
+  const [isLoadingParticipants, setIsLoadingParticipants] = useState(true);
+
+  // Fetch participants when component mounts
+  useEffect(() => {
+    const loadParticipants = async () => {
+      try {
+        setIsLoadingParticipants(true);
+        const data = await getParticipants();
+        setParticipants(data);
+      } catch (error) {
+        console.error("Error loading participants:", error);
+        toastController.dispatchToast(
+          <Toast>
+            <ToastTitle>Failed to load participants</ToastTitle>
+          </Toast>,
+          { intent: "error" }
+        );
+      } finally {
+        setIsLoadingParticipants(false);
+      }
+    };
+
+    loadParticipants();
+  }, [toastController]);
 
   // Form state for tag inputs
   const [tagInputs, setTagInputs] = useState({
@@ -213,7 +235,7 @@ export default function SessionRegister() {
       setFormState((prevState) => ({
         ...prevState,
         participantId: value,
-        participantName: selected ? selected.name : "",
+        participantName: selected ? selected.fullName : "",
       }));
     } else {
       setFormState((prevState) => ({ ...prevState, [field]: value }));
@@ -413,6 +435,14 @@ export default function SessionRegister() {
     );
   }
 
+  if (isLoadingParticipants) {
+    return (
+      <div className={styles.spinner}>
+        <Spinner label="Loading participants..." />
+      </div>
+    );
+  }
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -462,13 +492,14 @@ export default function SessionRegister() {
                   selectedOptions={
                     formState.participantId ? [formState.participantId] : []
                   }
+                  value={formState.participantName}
                   onOptionSelect={(e, data) =>
                     handleComboboxChange("participantId", e, data)
                   }
                 >
                   {participants.map((participant) => (
                     <Option key={participant.id} value={participant.id}>
-                      {participant.name}
+                      {participant.fullName}
                     </Option>
                   ))}
                 </Combobox>
