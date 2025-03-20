@@ -10,7 +10,7 @@ import {
   tokens,
   Link,
   Spinner,
-  Dropdown,
+  Combobox,
   Option,
   Field,
   Table,
@@ -33,8 +33,14 @@ import {
   ArrowSortRegular,
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
-import { getSessions } from "@/api/sessions"; // Updated import path
-import { SessionPreview } from "@/types/sessions";
+import { getSessions } from "@/api/sessions";
+import {
+  SessionPreview,
+  SessionType,
+  SessionStatus,
+  getDisplayValue,
+  getOptionsForField,
+} from "@/types/sessions";
 
 // Styles for the page with FluentUI v2 styling system
 const useStyles = makeStyles({
@@ -139,12 +145,13 @@ export default function SessionsPage() {
     []
   );
   const [searchText, setSearchText] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState<string>("all");
-  const [selectedType, setSelectedType] = useState<string>("all");
+  const [selectedStatus, setSelectedStatus] = useState<SessionStatus | "all">(
+    "all"
+  );
+  const [selectedType, setSelectedType] = useState<SessionType | "all">("all");
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [dateInputValue, setDateInputValue] = useState<string>("");
   const [isLoading, setIsLoading] = useState(true);
-  // const [error, setError] = useState<string | null>(null);
   const searchId = useId("search");
   const statusId = useId("status");
   const typeId = useId("type");
@@ -164,22 +171,6 @@ export default function SessionsPage() {
     });
   };
 
-  const capitalizeAndFormat = (str: string): string => {
-    return str
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
-  // Format date for input element (YYYY-MM-DD)
-  // const formatDateForInput = (date: Date | null): string => {
-  //   if (!date) return "";
-  //   const year = date.getFullYear();
-  //   const month = String(date.getMonth() + 1).padStart(2, "0");
-  //   const day = String(date.getDate()).padStart(2, "0");
-  //   return `${year}-${month}-${day}`;
-  // };
-
   // Fetch sessions on component mount
   useEffect(() => {
     const loadSessions = async () => {
@@ -188,8 +179,8 @@ export default function SessionsPage() {
 
         // Create filters object based on selected filters
         const filters: {
-          status?: string;
-          type?: string;
+          status?: SessionStatus;
+          type?: SessionType;
           date?: string;
         } = {};
 
@@ -266,14 +257,14 @@ export default function SessionsPage() {
     _: React.SyntheticEvent,
     data: { selectedOptions: string[] }
   ) => {
-    setSelectedStatus(data.selectedOptions[0]);
+    setSelectedStatus(data.selectedOptions[0] as SessionStatus | "all");
   };
 
   const handleTypeChange = (
     _: React.SyntheticEvent,
     data: { selectedOptions: string[] }
   ) => {
-    setSelectedType(data.selectedOptions[0]);
+    setSelectedType(data.selectedOptions[0] as SessionType | "all");
   };
 
   // Handler for date input change - Fix timezone issues
@@ -314,7 +305,7 @@ export default function SessionsPage() {
     router.push(`/sessions/${sessionId}`);
   };
 
-  const renderStatusBadge = (status: string) => {
+  const renderStatusBadge = (status: SessionStatus) => {
     let className = "";
 
     switch (status) {
@@ -331,7 +322,7 @@ export default function SessionsPage() {
 
     return (
       <span className={`${styles.statusBadge} ${className}`}>
-        {capitalizeAndFormat(status)}
+        {getDisplayValue("sessionStatus", status)}
       </span>
     );
   };
@@ -395,35 +386,47 @@ export default function SessionsPage() {
         </Field>
 
         <Field label="Status">
-          <Dropdown
+          <Combobox
             className={styles.filterItem}
             id={statusId}
-            value={selectedStatus}
+            selectedOptions={[selectedStatus]}
+            value={
+              selectedStatus === "all"
+                ? "All"
+                : getDisplayValue("sessionStatus", selectedStatus)
+            }
             onOptionSelect={(_, data) => handleStatusChange(_, data)}
             size="medium"
           >
-            <Option value="all">All Statuses</Option>
-            <Option value="scheduled">Scheduled</Option>
-            <Option value="completed">Completed</Option>
-            <Option value="cancelled">Cancelled</Option>
-          </Dropdown>
+            <Option value="all">All</Option>
+            {getOptionsForField("sessionStatus").map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.text}
+              </Option>
+            ))}
+          </Combobox>
         </Field>
 
         <Field label="Session Type">
-          <Dropdown
+          <Combobox
             className={styles.filterItem}
             id={typeId}
-            value={selectedType}
+            selectedOptions={[selectedType]}
+            value={
+              selectedType === "all"
+                ? "All"
+                : getDisplayValue("sessionType", selectedType)
+            }
             onOptionSelect={(_, data) => handleTypeChange(_, data)}
             size="medium"
           >
-            <Option value="all">All Types</Option>
-            <Option value="initial">Initial</Option>
-            <Option value="follow-up">Follow-up</Option>
-            <Option value="assessment">Assessment</Option>
-            <Option value="training">Training</Option>
-            <Option value="job-matching">Job Matching</Option>
-          </Dropdown>
+            <Option value="all">All</Option>
+            {getOptionsForField("sessionType").map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.text}
+              </Option>
+            ))}
+          </Combobox>
         </Field>
 
         <Field label="Date">
@@ -556,7 +559,9 @@ export default function SessionsPage() {
                   </TableCell>
                   <TableCell>{formatDate(new Date(session.date))}</TableCell>
                   <TableCell>{`${session.startTime} - ${session.endTime}`}</TableCell>
-                  <TableCell>{capitalizeAndFormat(session.type)}</TableCell>
+                  <TableCell>
+                    {getDisplayValue("sessionType", session.type)}
+                  </TableCell>
                   <TableCell>{session.location}</TableCell>
                   <TableCell>{renderStatusBadge(session.status)}</TableCell>
                 </TableRow>
