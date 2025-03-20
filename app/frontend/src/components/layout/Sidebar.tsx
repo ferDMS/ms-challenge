@@ -20,8 +20,6 @@ import {
   Add24Regular,
   ChevronRight24Regular,
   ChevronDown24Regular,
-  Board24Regular,
-  Board24Filled,
   Clock24Regular,
   AppsListDetail24Regular,
   DocumentAdd24Regular,

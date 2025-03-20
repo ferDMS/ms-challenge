@@ -26,6 +26,16 @@ export type JobMatchStatus =
   | "accepted"
   | "rejected";
 
+// Job match type
+export interface JobMatch {
+  jobId: string;
+  title: string;
+  employer: string;
+  description: string;
+  matchScore: number;
+  status: JobMatchStatus;
+}
+
 /**
  * Simplified participant data for preview in table listings
  */
@@ -91,12 +101,5 @@ export interface Participant {
   }[];
 
   // Job matches
-  jobMatches: {
-    jobId: string;
-    title: string;
-    employer: string;
-    description: string;
-    matchScore: number;
-    status: JobMatchStatus;
-  }[];
+  jobMatches: JobMatch[];
 }

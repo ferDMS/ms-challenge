@@ -15,9 +15,7 @@ import {
   Spinner,
   Link,
   InfoLabel,
-  Avatar,
   Tag,
-  TagGroup,
   Table,
   TableBody,
   TableCell,
@@ -38,7 +36,6 @@ import {
   DocumentTextRegular,
   CompassNorthwestRegular,
   LocationRegular,
-  CheckmarkRegular,
   BookInformationRegular,
   AddRegular,
 } from "@fluentui/react-icons";
@@ -51,7 +48,9 @@ import {
   Participant,
   EmploymentCycleStage,
   JobMatchStatus,
+  JobMatch,
 } from "@/types/participants";
+import { Session } from "@/types/sessions";
 
 const useStyles = makeStyles({
   container: {
@@ -223,8 +222,8 @@ export default function ParticipantDetail({
   const router = useRouter();
   const { id: participantId } = use(params);
   const [participant, setParticipant] = useState<Participant | null>(null);
-  const [sessions, setSessions] = useState<any[]>([]);
-  const [jobMatches, setJobMatches] = useState<any[]>([]);
+  const [sessions, setSessions] = useState<Session[]>([]);
+  const [jobMatches, setJobMatches] = useState<JobMatch[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -239,11 +238,11 @@ export default function ParticipantDetail({
 
         // Fetch related sessions
         const sessionsData = await getParticipantSessions(participantId);
-        setSessions(sessionsData as any[]);
+        setSessions(sessionsData as Session[]);
 
         // Fetch job matches
         const jobMatchesData = await getParticipantJobMatches(participantId);
-        setJobMatches(jobMatchesData as any[]);
+        setJobMatches(jobMatchesData as JobMatch[]);
 
         setError(null);
       } catch (err) {
@@ -623,38 +622,40 @@ export default function ParticipantDetail({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {participant.jobMatches.map((job, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  <Link href={`/jobs/${job.jobId}`}>{job.title}</Link>
-                </TableCell>
-                <TableCell>{job.employer}</TableCell>
-                <TableCell>
-                  <Badge
-                    appearance="filled"
-                    color={
-                      job.matchScore > 80
-                        ? "success"
-                        : job.matchScore > 60
-                        ? "warning"
-                        : "informative"
-                    }
-                  >
-                    {job.matchScore}%
-                  </Badge>
-                </TableCell>
-                <TableCell>{renderJobMatchStatusBadge(job.status)}</TableCell>
-                <TableCell>
-                  <Button
-                    appearance="subtle"
-                    icon={<DocumentTextRegular />}
-                    onClick={() => router.push(`/jobs/${job.jobId}`)}
-                  >
-                    Details
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
+            {(jobMatches.length > 0 ? jobMatches : participant.jobMatches).map(
+              (job, index) => (
+                <TableRow key={index}>
+                  <TableCell>
+                    <Link href={`/jobs/${job.jobId}`}>{job.title}</Link>
+                  </TableCell>
+                  <TableCell>{job.employer}</TableCell>
+                  <TableCell>
+                    <Badge
+                      appearance="filled"
+                      color={
+                        job.matchScore > 80
+                          ? "success"
+                          : job.matchScore > 60
+                          ? "warning"
+                          : "informative"
+                      }
+                    >
+                      {job.matchScore}%
+                    </Badge>
+                  </TableCell>
+                  <TableCell>{renderJobMatchStatusBadge(job.status)}</TableCell>
+                  <TableCell>
+                    <Button
+                      appearance="subtle"
+                      icon={<DocumentTextRegular />}
+                      onClick={() => router.push(`/jobs/${job.jobId}`)}
+                    >
+                      Details
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              )
+            )}
           </TableBody>
         </Table>
       </div>

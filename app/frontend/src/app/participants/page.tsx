@@ -186,7 +186,8 @@ export default function ParticipantsPage() {
   const searchId = useId("search");
   const statusId = useId("status");
   const disabilityTypeId = useId("disabilityType");
-  const skillTypeId = useId("skillType");
+  // const skillTypeId = useId("skillType");
+
   // Add state for sorting
   const [sortConfig, setSortConfig] = useState<SortConfig>({
     key: "fullName",
