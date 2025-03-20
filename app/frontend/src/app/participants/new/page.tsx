@@ -8,7 +8,7 @@ import {
   CardHeader,
   Button,
   Input,
-  Dropdown,
+  Combobox,
   Option,
   Field,
   Toast,
@@ -30,7 +30,6 @@ import {
   PhoneRegular,
   LocationRegular,
   CalendarRegular,
-  AccessibilityRegular,
   BriefcaseRegular,
   DeleteRegular,
   AddRegular,
@@ -41,7 +40,16 @@ import {
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { createParticipant } from "@/api/participants";
-import { EmploymentCycleStage, Participant } from "@/types/participants";
+import {
+  EmploymentCycleStage,
+  Participant,
+  Gender,
+  TransportationStatus,
+  DesiredHours,
+  DisabilityType,
+  getOptionsForField,
+  getDisplayValue,
+} from "@/types/participants";
 
 const useStyles = makeStyles({
   container: {
@@ -149,14 +157,14 @@ export default function ParticipantRegister() {
     email: "",
     phone: "",
     dateOfBirth: "",
-    gender: "",
+    gender: "" as Gender,
     primaryLanguage: "",
-    disabilityType: "",
+    disabilityType: "" as DisabilityType, // Fix: Use DisabilityType instead of string
     accommodationsNeeded: [] as string[],
-    transportationStatus: "",
+    transportationStatus: "" as TransportationStatus,
     currentStatus: "seeking" as EmploymentCycleStage,
     employmentGoal: "",
-    desiredHours: "",
+    desiredHours: "" as DesiredHours,
     skills: {
       technical: [] as string[],
       soft: [] as string[],
@@ -195,15 +203,22 @@ export default function ParticipantRegister() {
     if (errors.dateOfBirth) setErrors((prev) => ({ ...prev, dateOfBirth: "" }));
   };
 
-  // Handle dropdown changes
-  const handleDropdownChange = (
+  // Handle combobox changes with display value support
+  const handleComboboxChange = (
     field: string,
     _: React.SyntheticEvent,
     data: { selectedOptions: string[] }
   ) => {
-    if (!data.selectedOptions.length) return;
-    setFormState((prev) => ({ ...prev, [field]: data.selectedOptions[0] }));
-    if (errors[field]) setErrors((prev) => ({ ...prev, [field]: "" }));
+    if (data.selectedOptions.length > 0) {
+      setFormState((prev) => ({
+        ...prev,
+        [field]: data.selectedOptions[0],
+      }));
+
+      if (errors[field]) {
+        setErrors((prev) => ({ ...prev, [field]: "" }));
+      }
+    }
   };
 
   // Handle status change
@@ -523,20 +538,20 @@ export default function ParticipantRegister() {
                 validationMessage={errors.gender}
                 validationState={errors.gender ? "error" : "none"}
               >
-                <Dropdown
+                <Combobox
                   id={genderId}
                   placeholder="Select gender"
-                  selectedOptions={formState.gender ? [formState.gender] : []}
+                  value={getDisplayValue("gender", formState.gender)}
                   onOptionSelect={(e, data) =>
-                    handleDropdownChange("gender", e, data)
+                    handleComboboxChange("gender", e, data)
                   }
                 >
-                  <Option value="male">Male</Option>
-                  <Option value="female">Female</Option>
-                  <Option value="non-binary">Non-binary</Option>
-                  <Option value="prefer-not-to-say">Prefer not to say</Option>
-                  <Option value="other">Other</Option>
-                </Dropdown>
+                  {getOptionsForField("gender").map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.text}
+                    </Option>
+                  ))}
+                </Combobox>
               </Field>
 
               <Field
@@ -572,14 +587,23 @@ export default function ParticipantRegister() {
                 validationMessage={errors.disabilityType}
                 validationState={errors.disabilityType ? "error" : "none"}
               >
-                <Input
+                <Combobox
                   id={disabilityTypeId}
-                  name="disabilityType"
-                  value={formState.disabilityType}
-                  onChange={handleInputChange}
-                  contentBefore={<AccessibilityRegular />}
-                  placeholder="Enter disability type"
-                />
+                  placeholder="Select disability type"
+                  value={getDisplayValue(
+                    "disabilityType",
+                    formState.disabilityType
+                  )}
+                  onOptionSelect={(e, data) =>
+                    handleComboboxChange("disabilityType", e, data)
+                  }
+                >
+                  {getOptionsForField("disabilityType").map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.text}
+                    </Option>
+                  ))}
+                </Combobox>
               </Field>
 
               <Field
@@ -588,29 +612,23 @@ export default function ParticipantRegister() {
                 validationMessage={errors.transportationStatus}
                 validationState={errors.transportationStatus ? "error" : "none"}
               >
-                <Dropdown
+                <Combobox
                   id={transportationId}
                   placeholder="Select transportation status"
-                  selectedOptions={
+                  value={getDisplayValue(
+                    "transportationStatus",
                     formState.transportationStatus
-                      ? [formState.transportationStatus]
-                      : []
-                  }
+                  )}
                   onOptionSelect={(e, data) =>
-                    handleDropdownChange("transportationStatus", e, data)
+                    handleComboboxChange("transportationStatus", e, data)
                   }
                 >
-                  <Option value="independent">
-                    Independent transportation
-                  </Option>
-                  <Option value="public-transit">Uses public transit</Option>
-                  <Option value="assistance-needed">
-                    Needs transportation assistance
-                  </Option>
-                  <Option value="no-transportation">
-                    No transportation available
-                  </Option>
-                </Dropdown>
+                  {getOptionsForField("transportationStatus").map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.text}
+                    </Option>
+                  ))}
+                </Combobox>
               </Field>
             </div>
 
@@ -706,22 +724,23 @@ export default function ParticipantRegister() {
                 validationMessage={errors.desiredHours}
                 validationState={errors.desiredHours ? "error" : "none"}
               >
-                <Dropdown
+                <Combobox
                   id={desiredHoursId}
                   placeholder="Select desired hours"
-                  selectedOptions={
-                    formState.desiredHours ? [formState.desiredHours] : []
-                  }
+                  value={getDisplayValue(
+                    "desiredHours",
+                    formState.desiredHours
+                  )}
                   onOptionSelect={(e, data) =>
-                    handleDropdownChange("desiredHours", e, data)
+                    handleComboboxChange("desiredHours", e, data)
                   }
                 >
-                  <Option value="full-time">Full time (40h/week)</Option>
-                  <Option value="part-time-30">Part time (30h/week)</Option>
-                  <Option value="part-time-20">Part time (20h/week)</Option>
-                  <Option value="part-time-10">Part time (10h/week)</Option>
-                  <Option value="flexible">Flexible hours</Option>
-                </Dropdown>
+                  {getOptionsForField("desiredHours").map((option) => (
+                    <Option key={option.value} value={option.value}>
+                      {option.text}
+                    </Option>
+                  ))}
+                </Combobox>
               </Field>
             </div>
 

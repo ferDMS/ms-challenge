@@ -49,6 +49,8 @@ import {
   EmploymentCycleStage,
   JobMatchStatus,
   JobMatch,
+  GoalStatus,
+  getDisplayValue,
 } from "@/types/participants";
 import { Session } from "@/types/sessions";
 
@@ -267,18 +269,11 @@ export default function ParticipantDetail({
     });
   };
 
-  const capitalizeAndFormat = (str: string): string => {
-    return str
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   const renderStatusBadge = (status: EmploymentCycleStage) => {
     const className = styles[status as keyof typeof styles];
     return (
       <span className={`${styles.statusBadge} ${className}`}>
-        {capitalizeAndFormat(status)}
+        {getDisplayValue("employmentCycleStage", status)}
       </span>
     );
   };
@@ -287,16 +282,16 @@ export default function ParticipantDetail({
     const className = styles[status as keyof typeof styles];
     return (
       <span className={`${styles.matchStatusBadge} ${className}`}>
-        {capitalizeAndFormat(status)}
+        {getDisplayValue("jobMatchStatus", status)}
       </span>
     );
   };
 
-  const renderGoalStatusBadge = (status: string) => {
+  const renderGoalStatusBadge = (status: GoalStatus) => {
     const className = styles[status as keyof typeof styles];
     return (
       <span className={`${styles.goalStatusBadge} ${className}`}>
-        {capitalizeAndFormat(status)}
+        {getDisplayValue("goalStatus", status)}
       </span>
     );
   };
@@ -355,7 +350,9 @@ export default function ParticipantDetail({
           <Title2>{participant.fullName}</Title2>
           <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
             {renderStatusBadge(participant.currentStatus)}
-            <Badge appearance="outline">{participant.disabilityType}</Badge>
+            <Badge appearance="outline">
+              {getDisplayValue("disabilityType", participant.disabilityType)}
+            </Badge>
           </div>
         </div>
         <div className={styles.headerActions}>
@@ -398,7 +395,9 @@ export default function ParticipantDetail({
 
             <div className={styles.infoItem}>
               <DocumentTextRegular />
-              <Text>Gender: {participant.gender}</Text>
+              <Text>
+                Gender: {getDisplayValue("gender", participant.gender)}
+              </Text>
             </div>
 
             <div className={styles.infoItem}>
@@ -415,7 +414,9 @@ export default function ParticipantDetail({
 
             <div className={styles.infoItem}>
               <Text weight="semibold">Type: </Text>
-              <Text>{capitalizeAndFormat(participant.disabilityType)}</Text>
+              <Text>
+                {getDisplayValue("disabilityType", participant.disabilityType)}
+              </Text>
             </div>
 
             <InfoLabel style={{ marginTop: "16px" }}>
@@ -429,7 +430,12 @@ export default function ParticipantDetail({
 
             <div className={styles.infoItem} style={{ marginTop: "16px" }}>
               <Text weight="semibold">Transportation: </Text>
-              <Text>{participant.transportationStatus}</Text>
+              <Text>
+                {getDisplayValue(
+                  "transportationStatus",
+                  participant.transportationStatus
+                )}
+              </Text>
             </div>
           </div>
         </Card>
@@ -463,7 +469,9 @@ export default function ParticipantDetail({
               <CalendarMonthRegular />
               <div>
                 <Text weight="semibold">Desired Hours: </Text>
-                <Text>{participant.desiredHours}</Text>
+                <Text>
+                  {getDisplayValue("desiredHours", participant.desiredHours)}
+                </Text>
               </div>
             </div>
           </div>
@@ -692,7 +700,7 @@ export default function ParticipantDetail({
                 <TableCell>
                   <Link href={`/sessions/${session.id}`}>{session.title}</Link>
                 </TableCell>
-                <TableCell>{capitalizeAndFormat(session.type)}</TableCell>
+                <TableCell>{session.type}</TableCell>
                 <TableCell>
                   <Badge
                     appearance="filled"
@@ -704,7 +712,7 @@ export default function ParticipantDetail({
                         : "danger"
                     }
                   >
-                    {capitalizeAndFormat(session.status)}
+                    {session.status}
                   </Badge>
                 </TableCell>
                 <TableCell>{session.coachName}</TableCell>

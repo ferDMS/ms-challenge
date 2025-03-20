@@ -10,7 +10,7 @@ import {
   tokens,
   Link,
   Spinner,
-  Dropdown,
+  Combobox,
   Option,
   Field,
   Table,
@@ -35,7 +35,13 @@ import {
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { getParticipants } from "@/api/participants";
-import { ParticipantPreview, EmploymentCycleStage } from "@/types/participants";
+import {
+  ParticipantPreview,
+  EmploymentCycleStage,
+  DisabilityType,
+  getDisplayValue,
+  getOptionsForField,
+} from "@/types/participants";
 
 // Styles for the page with FluentUI v2 styling system
 const useStyles = makeStyles({
@@ -194,14 +200,6 @@ export default function ParticipantsPage() {
     direction: "asc",
   });
 
-  // Helper functions
-  const capitalizeAndFormat = (str: string): string => {
-    return str
-      .split("-")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  };
-
   // Fetch participants on component mount
   useEffect(() => {
     const loadParticipants = async () => {
@@ -211,12 +209,12 @@ export default function ParticipantsPage() {
         // Create filters object based on selected filters
         const filters: {
           status?: string;
-          disabilityType?: string;
+          disabilityType?: DisabilityType;
         } = {};
 
         if (selectedStatus !== "all") filters.status = selectedStatus;
         if (selectedDisabilityType !== "all")
-          filters.disabilityType = selectedDisabilityType;
+          filters.disabilityType = selectedDisabilityType as DisabilityType;
 
         // Fetch data from API
         const data = await getParticipants(filters);
@@ -309,7 +307,7 @@ export default function ParticipantsPage() {
 
     return (
       <span className={`${styles.statusBadge} ${className}`}>
-        {capitalizeAndFormat(status)}
+        {getDisplayValue("employmentCycleStage", status)}
       </span>
     );
   };
@@ -376,43 +374,45 @@ export default function ParticipantsPage() {
         </Field>
 
         <Field label="Status">
-          <Dropdown
+          <Combobox
             className={styles.filterItem}
             id={statusId}
-            value={selectedStatus}
+            value={
+              selectedStatus === "all"
+                ? "All Statuses"
+                : getDisplayValue("employmentCycleStage", selectedStatus)
+            }
             onOptionSelect={(_, data) => handleStatusChange(_, data)}
             size="medium"
           >
             <Option value="all">All Statuses</Option>
-            <Option value="seeking">Seeking</Option>
-            <Option value="employed">Employed</Option>
-            <Option value="training">Training</Option>
-            <Option value="job-search">Job Search</Option>
-            <Option value="job-matching">Job Matching</Option>
-            <Option value="interview-preparation">Interview Preparation</Option>
-            <Option value="post-employment-support">
-              Post-Employment Support
-            </Option>
-            <Option value="inactive">Inactive</Option>
-          </Dropdown>
+            {getOptionsForField("employmentCycleStage").map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.text}
+              </Option>
+            ))}
+          </Combobox>
         </Field>
 
         <Field label="Disability Type">
-          <Dropdown
+          <Combobox
             className={styles.filterItem}
             id={disabilityTypeId}
-            value={selectedDisabilityType}
+            value={
+              selectedDisabilityType === "all"
+                ? "All Types"
+                : getDisplayValue("disabilityType", selectedDisabilityType)
+            }
             onOptionSelect={(_, data) => handleDisabilityTypeChange(_, data)}
             size="medium"
           >
             <Option value="all">All Types</Option>
-            <Option value="physical">Physical</Option>
-            <Option value="cognitive">Cognitive</Option>
-            <Option value="sensory">Sensory</Option>
-            <Option value="developmental">Developmental</Option>
-            <Option value="mental-health">Mental Health</Option>
-            <Option value="multiple">Multiple</Option>
-          </Dropdown>
+            {getOptionsForField("disabilityType").map((option) => (
+              <Option key={option.value} value={option.value}>
+                {option.text}
+              </Option>
+            ))}
+          </Combobox>
         </Field>
 
         <Button
@@ -524,7 +524,10 @@ export default function ParticipantsPage() {
                     {renderStatusBadge(participant.currentStatus)}
                   </TableCell>
                   <TableCell className={styles.disabilityTypeColumn}>
-                    {capitalizeAndFormat(participant.disabilityType)}
+                    {getDisplayValue(
+                      "disabilityType",
+                      participant.disabilityType
+                    )}
                   </TableCell>
                   <TableCell className={styles.employmentGoalColumn}>
                     {participant.employmentGoal}
