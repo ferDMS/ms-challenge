@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
-
 import "./globals.css";
-import { Providers } from "@/app/providers";
-import MainLayout from "@/components/layout/MainLayout"; // Import MainLayout instead of Header
-import { ThemeProvider } from "../context/ThemeContext";
+
+import RootLayoutClient from "@/components/layout/RootLayoutClient";
 
 export const metadata: Metadata = {
   title: "WorkAble AI",
@@ -21,11 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <Providers>
-          <ThemeProvider>
-            <MainLayout>{children}</MainLayout>
-          </ThemeProvider>
-        </Providers>
+        <RootLayoutClient>{children}</RootLayoutClient>
       </body>
     </html>
   );

@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
-import { Header } from "./Header";
-import { Sidebar } from "./Sidebar";
+import { Header } from "@/components/layout/Header";
+import { Sidebar } from "@/components/layout/Sidebar";
 import { makeStyles } from "@fluentui/react-components";
 
 const useStyles = makeStyles({
