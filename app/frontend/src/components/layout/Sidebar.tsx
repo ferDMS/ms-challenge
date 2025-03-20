@@ -20,8 +20,6 @@ import {
   Add24Regular,
   ChevronRight24Regular,
   ChevronDown24Regular,
-  Board24Regular,
-  Board24Filled,
   Clock24Regular,
   AppsListDetail24Regular,
   DocumentAdd24Regular,
@@ -175,12 +173,6 @@ export const Sidebar: React.FC = () => {
       items: [
         {
           href: "/participants",
-          text: "Dashboard",
-          icon: <Board24Regular />,
-          activeIcon: <Board24Filled />,
-        },
-        {
-          href: "/participants/all",
           text: "All Participants",
           icon: <People24Regular />,
           activeIcon: <People24Filled />,
@@ -200,12 +192,6 @@ export const Sidebar: React.FC = () => {
       items: [
         {
           href: "/jobs",
-          text: "Dashboard",
-          icon: <Board24Regular />,
-          activeIcon: <Board24Filled />,
-        },
-        {
-          href: "/jobs/all",
           text: "All Jobs",
           icon: <Briefcase24Regular />,
           activeIcon: <Briefcase24Filled />,

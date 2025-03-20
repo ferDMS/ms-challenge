@@ -2,10 +2,10 @@
 
 # Container definitions
 CONTAINERS = {
-    # 'participants': {
-    #     'name': 'participants',
-    #     'partition_key': '/id'
-    # },
+    'participants': {
+        'name': 'participants',
+        'partition_key': '/id'
+    },
     # 'coaches': {
     #     'name': 'coaches',
     #     'partition_key': '/id'
