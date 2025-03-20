@@ -25,6 +25,22 @@ export type JobMatchStatus =
   | "offered"
   | "accepted"
   | "rejected";
+
+/**
+ * Simplified participant data for preview in table listings
+ */
+export interface ParticipantPreview {
+  id: string;
+  fullName: string;
+  email: string;
+  disabilityType: string;
+  currentStatus: EmploymentCycleStage;
+  employmentGoal: string;
+  avatar?: string; // Optional avatar URL
+  sessionCount?: number; // Number of sessions (for quick reference)
+  jobMatchCount?: number; // Number of job matches (for quick reference)
+}
+
 // Main Participant interface
 export interface Participant {
   id: string;
