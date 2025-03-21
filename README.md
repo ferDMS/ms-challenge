@@ -20,7 +20,7 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 - **Interactive Dashboard**: Filter and sort participants by employment stage and view key statistics
 - **Calendar Integration**: Coordinate and track sessions with participants
 
-- ### Solution to problematics
+### Solution to problematics
 
 | **Problematics**                          | **Solutions**                                                      |
 | ----------------------------------------- | ------------------------------------------------------------------ |
