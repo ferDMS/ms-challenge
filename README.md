@@ -24,12 +24,17 @@ WorkAble AI leverages multiple Azure services to deliver a comprehensive solutio
 
 ![Alt Text](https://github.com/ferDMS/ms-challenge/blob/Jose/ArquitecturaWorkabeAI.png)
 
-- **Azure OpenAI**: Powers personalized recommendations and insights for coaches
-- **Azure AI Search**: Enables efficient job matching and participant information retrieval
-- **Azure AI Document Intelligence**: Extracts data from intake forms and documentation
-- **Azure Cosmos DB**: Stores structured data about participants, sessions, and job opportunities
-- **Azure App Service**: Hosts the web application frontend and backend APIs
-- **Azure Blob Storage**: Manages document storage and retrieval
+- **Azure AI Search:** Enhances job matching by efficiently retrieving job opportunities based on participant's information.
+- **Azure Cosmos DB:** Stores unstructured data about participants, and job opportunities (json files).
+- **Azure Blob Storage:** Manages unstructured document storage such as session recordings.
+- **Azure Container Instances:** Deploys backend and frontend applications using Docker containers.
+- **Azure Container Registry:** Stores and manages container images for streamlined deployment.
+- **Azure GitHub Actions:** Automates build, test, and deployment pipelines for continuous integration and delivery.
+- **AI Speech:** Provides speech recognition capabilities for analyzing meeting conversations.
+- **AI Language:** Supports natural language processing for extracting insights from conversations given by meetings.
+- **Microsoft Outlook Calendar:** Integrates calendar data to manage sessions and schedule meetings.
+- **React and Fluent UI:** Builds the user-friendly frontend application.
+- **Flask and Python:** Power the backend API to handle data processing and AI interactions.
 
 ## User Workflows
 
