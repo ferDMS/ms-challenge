@@ -57,3 +57,68 @@ export interface Job {
   status: JobStatus;
   applicationUrl?: string;
 }
+
+// Job display mappings interface
+export interface JobMappings {
+  status: {
+    active: string;
+    filled: string;
+    expired: string;
+    draft: string;
+    "pending-approval": string;
+  };
+  employmentType: {
+    "full-time": string;
+    "part-time": string;
+    temporary: string;
+    seasonal: string;
+    internship: string;
+    contract: string;
+  };
+}
+
+// Job display mappings
+export const jobDisplayMappings: JobMappings = {
+  status: {
+    active: "Active",
+    filled: "Filled",
+    expired: "Expired",
+    draft: "Draft",
+    "pending-approval": "Pending Approval",
+  },
+  employmentType: {
+    "full-time": "Full Time",
+    "part-time": "Part Time",
+    temporary: "Temporary",
+    seasonal: "Seasonal",
+    internship: "Internship",
+    contract: "Contract",
+  },
+};
+
+// Utility function to get display value
+export function getJobDisplayValue(
+  field: keyof JobMappings,
+  value: string
+): string {
+  if (!value) return "";
+
+  const mappings = jobDisplayMappings[field];
+
+  if (mappings && Object.prototype.hasOwnProperty.call(mappings, value)) {
+    return mappings[value as keyof typeof mappings];
+  }
+
+  return value;
+}
+
+// Utility function to get options for dropdown
+export function getJobOptionsForField(
+  field: keyof JobMappings
+): Array<{ value: string; text: string }> {
+  const mapping = jobDisplayMappings[field];
+  return Object.entries(mapping).map(([value, text]) => ({
+    value,
+    text,
+  }));
+}
