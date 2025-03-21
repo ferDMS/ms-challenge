@@ -29,7 +29,7 @@ WorkAble AI leverages multiple Azure services to deliver a comprehensive solutio
 - **Azure App Service**: Hosts the web application frontend and backend APIs
 - **Azure Blob Storage**: Manages document storage and retrieval
 
-![Alt Text]([https://raw.githubusercontent.com/username/repository/branchname/path/to/image.png](https://github.com/ferDMS/ms-challenge/blob/Jose/ArquitecturaWorkabeAI.png))
+![Alt Text]((https://github.com/ferDMS/ms-challenge/blob/Jose/ArquitecturaWorkabeAI.png))
 
 ## User Workflows
 
