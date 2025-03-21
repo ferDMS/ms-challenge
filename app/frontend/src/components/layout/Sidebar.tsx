@@ -20,7 +20,7 @@ import {
   Add24Regular,
   ChevronRight24Regular,
   ChevronDown24Regular,
-  Clock24Regular,
+  Sparkle24Regular,
   AppsListDetail24Regular,
   DocumentAdd24Regular,
 } from "@fluentui/react-icons";
@@ -204,9 +204,9 @@ export const Sidebar: React.FC = () => {
         },
         {
           href: "/jobs/suggestions",
-          text: "Job Suggestions",
-          icon: <Clock24Regular />,
-          activeIcon: <Clock24Regular />,
+          text: "AI Job Suggestions",
+          icon: <Sparkle24Regular />,
+          activeIcon: <Sparkle24Regular />,
         },
       ],
     },

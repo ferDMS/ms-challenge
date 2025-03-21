@@ -632,6 +632,7 @@ export default function ParticipantRegister() {
               </Field>
             </div>
 
+            <Divider style={{ margin: "16px 0" }} />
             <Field label="Accommodations Needed">
               <div className={styles.addInputRow}>
                 <Input
@@ -687,20 +688,16 @@ export default function ParticipantRegister() {
                 onChange={handleStatusChange}
                 layout="horizontal"
               >
-                <Radio value="seeking" label="Seeking" />
+                <Radio value="initial" label="Initial" />
                 <Radio value="employed" label="Employed" />
                 <Radio value="training" label="In Training" />
-                <Radio value="job-search" label="Active Job Search" />
-                <Radio value="job-matching" label="Job Matching" />
+                <Radio value="job-search" label="Job Search" />
                 <Radio value="interview-preparation" label="Interview Prep" />
-                <Radio
-                  value="post-employment-support"
-                  label="Post-Employment Support"
-                />
                 <Radio value="inactive" label="Inactive" />
               </RadioGroup>
             </Field>
 
+            <Divider style={{ margin: "16px 0" }} />
             <div className={styles.inputsGrid}>
               <Field
                 label="Employment Goal"

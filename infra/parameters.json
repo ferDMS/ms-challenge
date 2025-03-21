@@ -1,0 +1,66 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "datastores_workspaceartifactstore_secretsType": {
+      "value": null
+    },
+    "datastores_workspaceblobstore_secretsType": {
+      "value": null
+    },
+    "datastores_workspaceworkingdirectory_secretsType": {
+      "value": null
+    },
+    "storageAccounts_mscstorage1234_name": {
+      "value": null
+    },
+    "vaults_kv_mscaihub777610045408_name": {
+      "value": null
+    },
+    "registries_mschallenge_name": {
+      "value": null
+    },
+    "searchServices_ms_challenge_search_name": {
+      "value": null
+    },
+    "accounts_ms_challenge_oai_name": {
+      "value": null
+    },
+    "databaseAccounts_ms_challenge_db_name": {
+      "value": null
+    },
+    "workspaces_msc_ai_hub_name": {
+      "value": null
+    },
+    "workspaces_msc_ai_proj_name": {
+      "value": null
+    },
+    "storageAccounts_stmscaihub777610045408_name": {
+      "value": null
+    },
+    "accounts_msc_ai_serv777610045408_name": {
+      "value": null
+    },
+    "accounts_ms_challenge_search_ais_name": {
+      "value": null
+    },
+    "workspaces_ms_challenge_ai_hub_name": {
+      "value": null
+    },
+    "containerGroups_ms_challenge_backend_aci_name": {
+      "value": null
+    },
+    "containerGroups_ms_challenge_frontend_aci_name": {
+      "value": null
+    },
+    "searchServices_msc_ai_search777610045408_externalid": {
+      "value": null
+    },
+    "storageAccounts_stmschalleng977432223107_externalid": {
+      "value": null
+    },
+    "vaults_kv_mschalle977432223107_externalid": {
+      "value": null
+    }
+  }
+}

@@ -1,0 +1,2154 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "datastores_workspaceartifactstore_secretsType": {
+      "type": "SecureString"
+    },
+    "datastores_workspaceblobstore_secretsType": {
+      "type": "SecureString"
+    },
+    "datastores_workspaceworkingdirectory_secretsType": {
+      "type": "SecureString"
+    },
+    "storageAccounts_mscstorage1234_name": {
+      "defaultValue": "mscstorage1234",
+      "type": "String"
+    },
+    "vaults_kv_mscaihub777610045408_name": {
+      "defaultValue": "kv-mscaihub777610045408",
+      "type": "String"
+    },
+    "registries_mschallenge_name": {
+      "defaultValue": "mschallenge",
+      "type": "String"
+    },
+    "searchServices_ms_challenge_search_name": {
+      "defaultValue": "ms-challenge-search",
+      "type": "String"
+    },
+    "accounts_ms_challenge_oai_name": {
+      "defaultValue": "ms-challenge-oai",
+      "type": "String"
+    },
+    "databaseAccounts_ms_challenge_db_name": {
+      "defaultValue": "ms-challenge-db",
+      "type": "String"
+    },
+    "workspaces_msc_ai_hub_name": {
+      "defaultValue": "msc-ai-hub",
+      "type": "String"
+    },
+    "workspaces_msc_ai_proj_name": {
+      "defaultValue": "msc-ai-proj",
+      "type": "String"
+    },
+    "storageAccounts_stmscaihub777610045408_name": {
+      "defaultValue": "stmscaihub777610045408",
+      "type": "String"
+    },
+    "accounts_msc_ai_serv777610045408_name": {
+      "defaultValue": "msc-ai-serv777610045408",
+      "type": "String"
+    },
+    "accounts_ms_challenge_search_ais_name": {
+      "defaultValue": "ms-challenge-search-ais",
+      "type": "String"
+    },
+    "workspaces_ms_challenge_ai_hub_name": {
+      "defaultValue": "ms-challenge-ai-hub",
+      "type": "String"
+    },
+    "containerGroups_ms_challenge_backend_aci_name": {
+      "defaultValue": "ms-challenge-backend-aci",
+      "type": "String"
+    },
+    "containerGroups_ms_challenge_frontend_aci_name": {
+      "defaultValue": "ms-challenge-frontend-aci",
+      "type": "String"
+    },
+    "searchServices_msc_ai_search777610045408_externalid": {
+      "defaultValue": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge/providers/Microsoft.Search/searchServices/msc-ai-search777610045408",
+      "type": "String"
+    },
+    "storageAccounts_stmschalleng977432223107_externalid": {
+      "defaultValue": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge/providers/Microsoft.Storage/storageAccounts/stmschalleng977432223107",
+      "type": "String"
+    },
+    "vaults_kv_mschalle977432223107_externalid": {
+      "defaultValue": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge/providers/Microsoft.KeyVault/vaults/kv-mschalle977432223107",
+      "type": "String"
+    }
+  },
+  "variables": {},
+  "resources": [
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2024-10-01",
+      "name": "[parameters('accounts_msc_ai_serv777610045408_name')]",
+      "location": "eastus",
+      "sku": {
+        "name": "S0"
+      },
+      "kind": "AIServices",
+      "properties": {
+        "customSubDomainName": "[parameters('accounts_msc_ai_serv777610045408_name')]",
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2024-10-01",
+      "name": "[parameters('accounts_ms_challenge_oai_name')]",
+      "location": "eastus",
+      "sku": {
+        "name": "S0"
+      },
+      "kind": "OpenAI",
+      "properties": {
+        "apiProperties": {},
+        "customSubDomainName": "[parameters('accounts_ms_challenge_oai_name')]",
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "virtualNetworkRules": [],
+          "ipRules": []
+        },
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts",
+      "apiVersion": "2024-10-01",
+      "name": "[parameters('accounts_ms_challenge_search_ais_name')]",
+      "location": "eastus",
+      "sku": {
+        "name": "S0"
+      },
+      "kind": "CognitiveServices",
+      "identity": {
+        "type": "None"
+      },
+      "properties": {
+        "apiProperties": {},
+        "customSubDomainName": "[parameters('accounts_ms_challenge_search_ais_name')]",
+        "networkAcls": {
+          "defaultAction": "Allow",
+          "virtualNetworkRules": [],
+          "ipRules": []
+        },
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2024-10-01-preview",
+      "name": "[parameters('containerGroups_ms_challenge_backend_aci_name')]",
+      "location": "canadacentral",
+      "properties": {
+        "sku": "Standard",
+        "containers": [
+          {
+            "name": "backend",
+            "properties": {
+              "image": "mschallenge.azurecr.io/ms-challenge-backend:52d6ca9b80773d6818bfe206534ae4bdfaeeb434",
+              "ports": [
+                {
+                  "port": 5001
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "FLASK_APP",
+                  "value": "run.py"
+                },
+                {
+                  "name": "FLASK_DEBUG",
+                  "value": "0"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 2,
+                  "cpu": 1
+                }
+              }
+            }
+          }
+        ],
+        "initContainers": [],
+        "imageRegistryCredentials": [
+          {
+            "server": "mschallenge.azurecr.io",
+            "username": "f54817cb-c5da-4054-904b-9f298f5f7967"
+          }
+        ],
+        "ipAddress": {
+          "ports": [
+            {
+              "port": 5001
+            }
+          ],
+          "ip": "20.116.199.9",
+          "type": "Public",
+          "dnsNameLabel": "[parameters('containerGroups_ms_challenge_backend_aci_name')]",
+          "autoGeneratedDomainNameLabelScope": "Unsecure"
+        },
+        "osType": "Linux"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2024-10-01-preview",
+      "name": "[parameters('containerGroups_ms_challenge_frontend_aci_name')]",
+      "location": "canadacentral",
+      "properties": {
+        "sku": "Standard",
+        "containers": [
+          {
+            "name": "frontend",
+            "properties": {
+              "image": "mschallenge.azurecr.io/ms-challenge-frontend:52d6ca9b80773d6818bfe206534ae4bdfaeeb434",
+              "ports": [
+                {
+                  "port": 80
+                }
+              ],
+              "environmentVariables": [
+                {
+                  "name": "NEXT_PUBLIC_API_URL",
+                  "value": "http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001"
+                },
+                {
+                  "name": "PORT",
+                  "value": "80"
+                }
+              ],
+              "resources": {
+                "requests": {
+                  "memoryInGB": 2,
+                  "cpu": 1
+                }
+              }
+            }
+          }
+        ],
+        "initContainers": [],
+        "imageRegistryCredentials": [
+          {
+            "server": "mschallenge.azurecr.io",
+            "username": "f54817cb-c5da-4054-904b-9f298f5f7967"
+          }
+        ],
+        "ipAddress": {
+          "ports": [
+            {
+              "port": 80
+            }
+          ],
+          "ip": "4.172.37.213",
+          "type": "Public",
+          "dnsNameLabel": "[parameters('containerGroups_ms_challenge_frontend_aci_name')]",
+          "autoGeneratedDomainNameLabelScope": "Unsecure"
+        },
+        "osType": "Linux"
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries",
+      "apiVersion": "2024-11-01-preview",
+      "name": "[parameters('registries_mschallenge_name')]",
+      "location": "canadacentral",
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "properties": {
+        "adminUserEnabled": false,
+        "policies": {
+          "quarantinePolicy": {
+            "status": "disabled"
+          },
+          "trustPolicy": {
+            "type": "Notary",
+            "status": "disabled"
+          },
+          "retentionPolicy": {
+            "days": 7,
+            "status": "disabled"
+          },
+          "exportPolicy": {
+            "status": "enabled"
+          },
+          "azureADAuthenticationAsArmPolicy": {
+            "status": "enabled"
+          },
+          "softDeletePolicy": {
+            "retentionDays": 7,
+            "status": "disabled"
+          }
+        },
+        "encryption": {
+          "status": "disabled"
+        },
+        "dataEndpointEnabled": false,
+        "publicNetworkAccess": "Enabled",
+        "networkRuleBypassOptions": "AzureServices",
+        "zoneRedundancy": "Disabled",
+        "anonymousPullEnabled": false,
+        "metadataSearch": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[parameters('databaseAccounts_ms_challenge_db_name')]",
+      "location": "West US",
+      "tags": {
+        "defaultExperience": "Core (SQL)",
+        "hidden-cosmos-mmspecial": ""
+      },
+      "kind": "GlobalDocumentDB",
+      "identity": {
+        "type": "None"
+      },
+      "properties": {
+        "publicNetworkAccess": "Enabled",
+        "enableAutomaticFailover": false,
+        "enableMultipleWriteLocations": false,
+        "isVirtualNetworkFilterEnabled": false,
+        "virtualNetworkRules": [],
+        "disableKeyBasedMetadataWriteAccess": false,
+        "enableFreeTier": false,
+        "enableAnalyticalStorage": false,
+        "analyticalStorageConfiguration": {
+          "schemaType": "WellDefined"
+        },
+        "databaseAccountOfferType": "Standard",
+        "enableMaterializedViews": false,
+        "capacityMode": "Serverless",
+        "defaultIdentity": "FirstPartyIdentity",
+        "networkAclBypass": "None",
+        "disableLocalAuth": false,
+        "enablePartitionMerge": false,
+        "enablePerRegionPerPartitionAutoscale": false,
+        "enableBurstCapacity": false,
+        "enablePriorityBasedExecution": false,
+        "defaultPriorityLevel": "High",
+        "minimalTlsVersion": "Tls12",
+        "consistencyPolicy": {
+          "defaultConsistencyLevel": "Session",
+          "maxIntervalInSeconds": 5,
+          "maxStalenessPrefix": 100
+        },
+        "locations": [
+          {
+            "locationName": "West US",
+            "failoverPriority": 0,
+            "isZoneRedundant": false
+          }
+        ],
+        "cors": [],
+        "capabilities": [],
+        "ipRules": [],
+        "backupPolicy": {
+          "type": "Periodic",
+          "periodicModeProperties": {
+            "backupIntervalInMinutes": 240,
+            "backupRetentionIntervalInHours": 8,
+            "backupStorageRedundancy": "Geo"
+          }
+        },
+        "networkAclBypassResourceIds": [],
+        "diagnosticLogSettings": {
+          "enableFullTextQuery": "None"
+        },
+        "capacity": {
+          "totalThroughputLimit": 4000
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[parameters('vaults_kv_mscaihub777610045408_name')]",
+      "location": "eastus",
+      "properties": {
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "tenantId": "2a0b95da-3afd-470a-8466-aea3872f3f4b",
+        "accessPolicies": [
+          {
+            "tenantId": "2a0b95da-3afd-470a-8466-aea3872f3f4b",
+            "objectId": "111e555f-f444-4cc0-95e0-7d84dc2a43fc",
+            "permissions": {
+              "keys": ["all"],
+              "secrets": ["all"],
+              "certificates": ["all"],
+              "storage": []
+            }
+          },
+          {
+            "tenantId": "2a0b95da-3afd-470a-8466-aea3872f3f4b",
+            "objectId": "58a0af01-2417-49dc-b9eb-89909bb9f6ad",
+            "permissions": {
+              "keys": ["all"],
+              "secrets": ["all"],
+              "certificates": ["all"],
+              "storage": []
+            }
+          }
+        ],
+        "enabledForDeployment": false,
+        "enableSoftDelete": true,
+        "vaultUri": "[concat('https://', parameters('vaults_kv_mscaihub777610045408_name'), '.vault.azure.net/')]",
+        "provisioningState": "Succeeded",
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[parameters('workspaces_ms_challenge_ai_hub_name')]",
+      "location": "eastus",
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "kind": "Hub",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "friendlyName": "[parameters('workspaces_ms_challenge_ai_hub_name')]",
+        "storageAccount": "[parameters('storageAccounts_stmschalleng977432223107_externalid')]",
+        "keyVault": "[parameters('vaults_kv_mschalle977432223107_externalid')]",
+        "hbiWorkspace": false,
+        "managedNetwork": {
+          "isolationMode": "Disabled"
+        },
+        "allowRoleAssignmentOnRG": true,
+        "v1LegacyMode": false,
+        "publicNetworkAccess": "Enabled",
+        "ipAllowlist": [],
+        "discoveryUrl": "https://eastus.api.azureml.ms/discovery",
+        "EnableSoftwareBillOfMaterials": false,
+        "workspaceHubConfig": {
+          "defaultWorkspaceResourceGroup": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge"
+        },
+        "enableDataIsolation": true,
+        "systemDatastoresAuthMode": "accesskey",
+        "enableServiceSideCMKEncryption": false
+      }
+    },
+    {
+      "type": "Microsoft.Search/searchServices",
+      "apiVersion": "2024-06-01-preview",
+      "name": "[parameters('searchServices_ms_challenge_search_name')]",
+      "location": "East US",
+      "sku": {
+        "name": "basic"
+      },
+      "properties": {
+        "replicaCount": 1,
+        "partitionCount": 1,
+        "hostingMode": "default",
+        "publicNetworkAccess": "Enabled",
+        "networkRuleSet": {
+          "ipRules": [],
+          "bypass": "None"
+        },
+        "encryptionWithCmk": {
+          "enforcement": "Unspecified"
+        },
+        "disableLocalAuth": false,
+        "authOptions": {
+          "apiKeyOnly": {}
+        },
+        "disabledDataExfiltrationOptions": [],
+        "semanticSearch": "free"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('storageAccounts_mscstorage1234_name')]",
+      "location": "eastus",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "dnsEndpointType": "Standard",
+        "defaultToOAuthAuthentication": false,
+        "publicNetworkAccess": "Enabled",
+        "allowCrossTenantReplication": false,
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": true,
+        "allowSharedKeyAccess": true,
+        "largeFileSharesState": "Enabled",
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "requireInfrastructureEncryption": false,
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts",
+      "apiVersion": "2024-01-01",
+      "name": "[parameters('storageAccounts_stmscaihub777610045408_name')]",
+      "location": "eastus",
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "kind": "StorageV2",
+      "properties": {
+        "allowCrossTenantReplication": false,
+        "minimumTlsVersion": "TLS1_2",
+        "allowBlobPublicAccess": false,
+        "networkAcls": {
+          "bypass": "AzureServices",
+          "virtualNetworkRules": [],
+          "ipRules": [],
+          "defaultAction": "Allow"
+        },
+        "supportsHttpsTrafficOnly": true,
+        "encryption": {
+          "services": {
+            "file": {
+              "keyType": "Account",
+              "enabled": true
+            },
+            "blob": {
+              "keyType": "Account",
+              "enabled": true
+            }
+          },
+          "keySource": "Microsoft.Storage"
+        },
+        "accessTier": "Hot"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/defenderForAISettings",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_msc_ai_serv777610045408_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/defenderForAISettings",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_ms_challenge_oai_name'), '/Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_ms_challenge_oai_name'))]"
+      ],
+      "properties": {
+        "state": "Disabled"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/deployments",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_ms_challenge_oai_name'), '/text-embedding-ada-002')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_ms_challenge_oai_name'))]"
+      ],
+      "sku": {
+        "name": "GlobalStandard",
+        "capacity": 120
+      },
+      "properties": {
+        "model": {
+          "format": "OpenAI",
+          "name": "text-embedding-ada-002",
+          "version": "2"
+        },
+        "versionUpgradeOption": "NoAutoUpgrade",
+        "currentCapacity": 120,
+        "raiPolicyName": "Microsoft.DefaultV2"
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_msc_ai_serv777610045408_name'), '/Microsoft.Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "mode": "Blocking",
+        "contentFilters": [
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_ms_challenge_oai_name'), '/Microsoft.Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_ms_challenge_oai_name'))]"
+      ],
+      "properties": {
+        "mode": "Blocking",
+        "contentFilters": [
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_msc_ai_serv777610045408_name'), '/Microsoft.DefaultV2')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "mode": "Blocking",
+        "contentFilters": [
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Jailbreak",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Protected Material Text",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Protected Material Code",
+            "blocking": false,
+            "enabled": true,
+            "source": "Completion"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.CognitiveServices/accounts/raiPolicies",
+      "apiVersion": "2024-10-01",
+      "name": "[concat(parameters('accounts_ms_challenge_oai_name'), '/Microsoft.DefaultV2')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_ms_challenge_oai_name'))]"
+      ],
+      "properties": {
+        "mode": "Blocking",
+        "contentFilters": [
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Hate",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Sexual",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Violence",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Selfharm",
+            "severityThreshold": "Medium",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Jailbreak",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Protected Material Text",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Protected Material Code",
+            "blocking": false,
+            "enabled": true,
+            "source": "Completion"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+      "apiVersion": "2024-11-01-preview",
+      "name": "[concat(parameters('registries_mschallenge_name'), '/_repositories_admin')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('registries_mschallenge_name'))]"
+      ],
+      "properties": {
+        "description": "Can perform all read, write and delete operations on the registry",
+        "actions": [
+          "repositories/*/metadata/read",
+          "repositories/*/metadata/write",
+          "repositories/*/content/read",
+          "repositories/*/content/write",
+          "repositories/*/content/delete"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+      "apiVersion": "2024-11-01-preview",
+      "name": "[concat(parameters('registries_mschallenge_name'), '/_repositories_pull')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('registries_mschallenge_name'))]"
+      ],
+      "properties": {
+        "description": "Can pull any repository of the registry",
+        "actions": ["repositories/*/content/read"]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+      "apiVersion": "2024-11-01-preview",
+      "name": "[concat(parameters('registries_mschallenge_name'), '/_repositories_pull_metadata_read')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('registries_mschallenge_name'))]"
+      ],
+      "properties": {
+        "description": "Can perform all read operations on the registry",
+        "actions": [
+          "repositories/*/content/read",
+          "repositories/*/metadata/read"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+      "apiVersion": "2024-11-01-preview",
+      "name": "[concat(parameters('registries_mschallenge_name'), '/_repositories_push')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('registries_mschallenge_name'))]"
+      ],
+      "properties": {
+        "description": "Can push to any repository of the registry",
+        "actions": [
+          "repositories/*/content/read",
+          "repositories/*/content/write"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerRegistry/registries/scopeMaps",
+      "apiVersion": "2024-11-01-preview",
+      "name": "[concat(parameters('registries_mschallenge_name'), '/_repositories_push_metadata_write')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.ContainerRegistry/registries', parameters('registries_mschallenge_name'))]"
+      ],
+      "properties": {
+        "description": "Can perform all read and write operations on the registry",
+        "actions": [
+          "repositories/*/metadata/read",
+          "repositories/*/metadata/write",
+          "repositories/*/content/read",
+          "repositories/*/content/write"
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/dataTransferJobs",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/Portal_jaskdfjkasdklj_1742292781')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "mode": "Offline",
+        "source": {
+          "databaseName": "ms-challenge",
+          "containerName": "sessions",
+          "component": "CosmosDBSql"
+        },
+        "destination": {
+          "databaseName": "ms-challenge",
+          "containerName": "jaskdfjkasdklj",
+          "component": "CosmosDBSql"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/services",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/dataTransferService')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "instanceSize": "Cosmos.D4s",
+        "instanceCount": 2
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/ms-challenge')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "ms-challenge"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/00000000-0000-0000-0000-000000000001')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "roleName": "Cosmos DB Built-in Data Reader",
+        "type": "BuiltInRole",
+        "assignableScopes": [
+          "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+        ],
+        "permissions": [
+          {
+            "dataActions": [
+              "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+              "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/executeQuery",
+              "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/readChangeFeed",
+              "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/read"
+            ],
+            "notDataActions": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlRoleDefinitions",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/00000000-0000-0000-0000-000000000002')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "roleName": "Cosmos DB Built-in Data Contributor",
+        "type": "BuiltInRole",
+        "assignableScopes": [
+          "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+        ],
+        "permissions": [
+          {
+            "dataActions": [
+              "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+              "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/*",
+              "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers/items/*"
+            ],
+            "notDataActions": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/00000000-0000-0000-0000-000000000001')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "roleName": "Cosmos DB Built-in Data Reader",
+        "type": "BuiltInRole",
+        "assignableScopes": [
+          "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+        ],
+        "permissions": [
+          {
+            "dataActions": [
+              "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+              "Microsoft.DocumentDB/databaseAccounts/tables/containers/executeQuery",
+              "Microsoft.DocumentDB/databaseAccounts/tables/containers/readChangeFeed",
+              "Microsoft.DocumentDB/databaseAccounts/tables/containers/entities/read"
+            ],
+            "notDataActions": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/tableRoleDefinitions",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/00000000-0000-0000-0000-000000000002')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "roleName": "Cosmos DB Built-in Data Contributor",
+        "type": "BuiltInRole",
+        "assignableScopes": [
+          "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+        ],
+        "permissions": [
+          {
+            "dataActions": [
+              "Microsoft.DocumentDB/databaseAccounts/readMetadata",
+              "Microsoft.DocumentDB/databaseAccounts/tables/*",
+              "Microsoft.DocumentDB/databaseAccounts/tables/containers/*",
+              "Microsoft.DocumentDB/databaseAccounts/tables/containers/entities/*"
+            ],
+            "notDataActions": []
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('vaults_kv_mscaihub777610045408_name'), '/51962712-b646-421d-ace9-6a73a64ea08b-workspaceartifactstore00010101000000000')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "contentType": "application/vnd.ms-StorageAccountAccessKey",
+        "attributes": {
+          "enabled": true,
+          "exp": 1804953054
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('vaults_kv_mscaihub777610045408_name'), '/51962712-b646-421d-ace9-6a73a64ea08b-workspaceblobstore00010101000000000')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "contentType": "application/vnd.ms-StorageAccountAccessKey",
+        "attributes": {
+          "enabled": true,
+          "exp": 1804953054
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('vaults_kv_mscaihub777610045408_name'), '/51962712-b646-421d-ace9-6a73a64ea08b-workspaceworkingdirectory00010101000000000')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "contentType": "application/vnd.ms-StorageAccountAccessKey",
+        "attributes": {
+          "enabled": true,
+          "exp": 1804953054
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('vaults_kv_mscaihub777610045408_name'), '/a9a73459-7a09-4fc3-9263-e629831be52d-AzureAISearch')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "contentType": "WorkspaceConnectionSecret",
+        "attributes": {
+          "enabled": true,
+          "exp": 1804953033
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('vaults_kv_mscaihub777610045408_name'), '/a9a73459-7a09-4fc3-9263-e629831be52d-mscaiserv777610045408')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "contentType": "WorkspaceConnectionSecret",
+        "attributes": {
+          "enabled": true,
+          "exp": 1804953038
+        }
+      }
+    },
+    {
+      "type": "Microsoft.KeyVault/vaults/secrets",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('vaults_kv_mscaihub777610045408_name'), '/a9a73459-7a09-4fc3-9263-e629831be52d-mscaiserv777610045408aoai')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "contentType": "WorkspaceConnectionSecret",
+        "attributes": {
+          "enabled": true,
+          "exp": 1804953035
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_hub_name'), '/AzureAISearch')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]"
+      ],
+      "properties": {
+        "authType": "ApiKey",
+        "category": "CognitiveSearch",
+        "target": "https://msc-ai-search777610045408.search.windows.net",
+        "useWorkspaceManagedIdentity": false,
+        "isSharedToAll": true,
+        "sharedUserList": [],
+        "peRequirement": "NotRequired",
+        "peStatus": "NotApplicable",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[parameters('searchServices_msc_ai_search777610045408_externalid')]",
+          "Location": "eastus",
+          "ApiVersion": "2024-05-01-preview",
+          "DeploymentApiVersion": "2023-11-01"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_proj_name'), '/AzureAISearch')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]"
+      ],
+      "properties": {
+        "authType": "ApiKey",
+        "category": "CognitiveSearch",
+        "target": "https://msc-ai-search777610045408.search.windows.net",
+        "useWorkspaceManagedIdentity": false,
+        "isSharedToAll": true,
+        "sharedUserList": [],
+        "peRequirement": "NotRequired",
+        "peStatus": "NotApplicable",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[parameters('searchServices_msc_ai_search777610045408_externalid')]",
+          "Location": "eastus",
+          "ApiVersion": "2024-05-01-preview",
+          "DeploymentApiVersion": "2023-11-01"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_proj_name'), '/workspaceartifactstore')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]"
+      ],
+      "properties": {
+        "credentials": {
+          "credentialsType": "Sas",
+          "secrets": {
+            "secretsType": "[parameters('datastores_workspaceartifactstore_secretsType')]"
+          }
+        },
+        "datastoreType": "AzureBlob",
+        "accountName": "stmscaihub777610045408",
+        "containerName": "51962712-b646-421d-ace9-6a73a64ea08b-azureml",
+        "endpoint": "core.windows.net",
+        "protocol": "https",
+        "serviceDataAccessAuthIdentity": "None"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_proj_name'), '/workspaceblobstore')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]"
+      ],
+      "properties": {
+        "credentials": {
+          "credentialsType": "Sas",
+          "secrets": {
+            "secretsType": "[parameters('datastores_workspaceblobstore_secretsType')]"
+          }
+        },
+        "subscriptionId": "6738d587-ec2b-4c45-9e52-01f6c7a252b3",
+        "resourceGroup": "rg-ms-challenge",
+        "datastoreType": "AzureBlob",
+        "accountName": "stmscaihub777610045408",
+        "containerName": "51962712-b646-421d-ace9-6a73a64ea08b-azureml-blobstore",
+        "endpoint": "core.windows.net",
+        "protocol": "https",
+        "serviceDataAccessAuthIdentity": "WorkspaceSystemAssignedIdentity"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/datastores",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_proj_name'), '/workspaceworkingdirectory')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]"
+      ],
+      "properties": {
+        "credentials": {
+          "credentialsType": "AccountKey",
+          "secrets": {
+            "secretsType": "[parameters('datastores_workspaceworkingdirectory_secretsType')]"
+          }
+        },
+        "datastoreType": "AzureFile",
+        "accountName": "stmscaihub777610045408",
+        "fileShareName": "51962712-b646-421d-ace9-6a73a64ea08b-code",
+        "endpoint": "core.windows.net",
+        "protocol": "https",
+        "serviceDataAccessAuthIdentity": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_mscstorage1234_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mscstorage1234_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "containerDeleteRetentionPolicy": {
+          "enabled": true,
+          "days": 7
+        },
+        "cors": {
+          "corsRules": []
+        },
+        "deleteRetentionPolicy": {
+          "allowPermanentDelete": false,
+          "enabled": true,
+          "days": 7
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "cors": {
+          "corsRules": [
+            {
+              "allowedOrigins": [
+                "https://mlworkspace.azure.ai",
+                "https://ml.azure.com",
+                "https://*.ml.azure.com",
+                "https://ai.azure.com",
+                "https://*.ai.azure.com"
+              ],
+              "allowedMethods": [
+                "GET",
+                "HEAD",
+                "PUT",
+                "DELETE",
+                "OPTIONS",
+                "POST",
+                "PATCH"
+              ],
+              "maxAgeInSeconds": 1800,
+              "exposedHeaders": ["*"],
+              "allowedHeaders": ["*"]
+            }
+          ]
+        },
+        "deleteRetentionPolicy": {
+          "allowPermanentDelete": false,
+          "enabled": false
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_mscstorage1234_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mscstorage1234_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "protocolSettings": {
+          "smb": {}
+        },
+        "cors": {
+          "corsRules": []
+        },
+        "shareDeleteRetentionPolicy": {
+          "enabled": true,
+          "days": 7
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "sku": {
+        "name": "Standard_LRS",
+        "tier": "Standard"
+      },
+      "properties": {
+        "protocolSettings": {
+          "smb": {}
+        },
+        "cors": {
+          "corsRules": [
+            {
+              "allowedOrigins": [
+                "https://mlworkspace.azure.ai",
+                "https://ml.azure.com",
+                "https://*.ml.azure.com",
+                "https://ai.azure.com",
+                "https://*.ai.azure.com"
+              ],
+              "allowedMethods": [
+                "GET",
+                "HEAD",
+                "PUT",
+                "DELETE",
+                "OPTIONS",
+                "POST"
+              ],
+              "maxAgeInSeconds": 1800,
+              "exposedHeaders": ["*"],
+              "allowedHeaders": ["*"]
+            }
+          ]
+        },
+        "shareDeleteRetentionPolicy": {
+          "enabled": true,
+          "days": 7
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_mscstorage1234_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mscstorage1234_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/queueServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_mscstorage1234_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mscstorage1234_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/tableServices",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "cors": {
+          "corsRules": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/ms-challenge/job_matches')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_ms_challenge_db_name'), 'ms-challenge')]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "job_matches",
+          "indexingPolicy": {
+            "indexingMode": "consistent",
+            "automatic": true,
+            "includedPaths": [
+              {
+                "path": "/*"
+              }
+            ],
+            "excludedPaths": [
+              {
+                "path": "/\"_etag\"/?"
+              }
+            ]
+          },
+          "partitionKey": {
+            "paths": ["/participantId"],
+            "kind": "Hash",
+            "version": 2
+          },
+          "uniqueKeyPolicy": {
+            "uniqueKeys": []
+          },
+          "conflictResolutionPolicy": {
+            "mode": "LastWriterWins",
+            "conflictResolutionPath": "/_ts"
+          },
+          "computedProperties": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/ms-challenge/jobs')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_ms_challenge_db_name'), 'ms-challenge')]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "jobs",
+          "indexingPolicy": {
+            "indexingMode": "consistent",
+            "automatic": true,
+            "includedPaths": [
+              {
+                "path": "/*"
+              }
+            ],
+            "excludedPaths": [
+              {
+                "path": "/\"_etag\"/?"
+              }
+            ]
+          },
+          "partitionKey": {
+            "paths": ["/id"],
+            "kind": "Hash",
+            "version": 2
+          },
+          "uniqueKeyPolicy": {
+            "uniqueKeys": []
+          },
+          "conflictResolutionPolicy": {
+            "mode": "LastWriterWins",
+            "conflictResolutionPath": "/_ts"
+          },
+          "computedProperties": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/ms-challenge/participants')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_ms_challenge_db_name'), 'ms-challenge')]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "participants",
+          "indexingPolicy": {
+            "indexingMode": "consistent",
+            "automatic": true,
+            "includedPaths": [
+              {
+                "path": "/*"
+              }
+            ],
+            "excludedPaths": [
+              {
+                "path": "/\"_etag\"/?"
+              }
+            ]
+          },
+          "partitionKey": {
+            "paths": ["/id"],
+            "kind": "Hash",
+            "version": 2
+          },
+          "uniqueKeyPolicy": {
+            "uniqueKeys": []
+          },
+          "conflictResolutionPolicy": {
+            "mode": "LastWriterWins",
+            "conflictResolutionPath": "/_ts"
+          },
+          "computedProperties": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.DocumentDB/databaseAccounts/sqlDatabases/containers",
+      "apiVersion": "2024-12-01-preview",
+      "name": "[concat(parameters('databaseAccounts_ms_challenge_db_name'), '/ms-challenge/sessions')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts/sqlDatabases', parameters('databaseAccounts_ms_challenge_db_name'), 'ms-challenge')]",
+        "[resourceId('Microsoft.DocumentDB/databaseAccounts', parameters('databaseAccounts_ms_challenge_db_name'))]"
+      ],
+      "properties": {
+        "resource": {
+          "id": "sessions",
+          "indexingPolicy": {
+            "indexingMode": "consistent",
+            "automatic": true,
+            "includedPaths": [
+              {
+                "path": "/*"
+              }
+            ],
+            "excludedPaths": [
+              {
+                "path": "/\"_etag\"/?"
+              }
+            ]
+          },
+          "partitionKey": {
+            "paths": ["/id"],
+            "kind": "Hash",
+            "version": 2
+          },
+          "uniqueKeyPolicy": {
+            "uniqueKeys": []
+          },
+          "conflictResolutionPolicy": {
+            "mode": "LastWriterWins",
+            "conflictResolutionPath": "/_ts"
+          },
+          "computedProperties": []
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_hub_name'), '/msc-ai-serv777610045408')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "authType": "ApiKey",
+        "category": "AIServices",
+        "target": "https://msc-ai-serv777610045408.cognitiveservices.azure.com/",
+        "useWorkspaceManagedIdentity": true,
+        "isSharedToAll": true,
+        "sharedUserList": [],
+        "peRequirement": "NotRequired",
+        "peStatus": "NotApplicable",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]",
+          "Location": "eastus",
+          "ApiVersion": "2023-07-01-preview",
+          "DeploymentApiVersion": "2023-10-01-preview"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_proj_name'), '/msc-ai-serv777610045408')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "authType": "ApiKey",
+        "category": "AIServices",
+        "target": "https://msc-ai-serv777610045408.cognitiveservices.azure.com/",
+        "useWorkspaceManagedIdentity": true,
+        "isSharedToAll": true,
+        "sharedUserList": [],
+        "peRequirement": "NotRequired",
+        "peStatus": "NotApplicable",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]",
+          "Location": "eastus",
+          "ApiVersion": "2023-07-01-preview",
+          "DeploymentApiVersion": "2023-10-01-preview"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_hub_name'), '/msc-ai-serv777610045408_aoai')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "authType": "ApiKey",
+        "category": "AzureOpenAI",
+        "target": "https://msc-ai-serv777610045408.openai.azure.com/",
+        "useWorkspaceManagedIdentity": true,
+        "isSharedToAll": true,
+        "sharedUserList": [],
+        "peRequirement": "NotRequired",
+        "peStatus": "NotApplicable",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]",
+          "Location": "eastus",
+          "ApiVersion": "2023-07-01-preview",
+          "DeploymentApiVersion": "2023-10-01-preview"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_proj_name'), '/msc-ai-serv777610045408_aoai')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]",
+        "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]"
+      ],
+      "properties": {
+        "authType": "ApiKey",
+        "category": "AzureOpenAI",
+        "target": "https://msc-ai-serv777610045408.openai.azure.com/",
+        "useWorkspaceManagedIdentity": true,
+        "isSharedToAll": true,
+        "sharedUserList": [],
+        "peRequirement": "NotRequired",
+        "peStatus": "NotApplicable",
+        "metadata": {
+          "ApiType": "Azure",
+          "ResourceId": "[resourceId('Microsoft.CognitiveServices/accounts', parameters('accounts_msc_ai_serv777610045408_name'))]",
+          "Location": "eastus",
+          "ApiVersion": "2023-07-01-preview",
+          "DeploymentApiVersion": "2023-10-01-preview"
+        }
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections/raiPolicies",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_hub_name'), '/msc-ai-serv777610045408_aoai/Microsoft.Default')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces/connections', parameters('workspaces_msc_ai_hub_name'), 'msc-ai-serv777610045408_aoai')]",
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]"
+      ],
+      "properties": {
+        "type": "SystemManaged",
+        "mode": "Blocking",
+        "contentFilters": [
+          {
+            "name": "Hate",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Hate",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Sexual",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Sexual",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Violence",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Violence",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Selfharm",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Selfharm",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces/connections/raiPolicies",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[concat(parameters('workspaces_msc_ai_hub_name'), '/msc-ai-serv777610045408_aoai/Microsoft.DefaultV2')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.MachineLearningServices/workspaces/connections', parameters('workspaces_msc_ai_hub_name'), 'msc-ai-serv777610045408_aoai')]",
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]"
+      ],
+      "properties": {
+        "type": "SystemManaged",
+        "mode": "Blocking",
+        "contentFilters": [
+          {
+            "name": "Hate",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Hate",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Sexual",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Sexual",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Violence",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Violence",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Selfharm",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Selfharm",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Jailbreak",
+            "blocking": true,
+            "enabled": true,
+            "source": "Prompt"
+          },
+          {
+            "name": "Protected Material Text",
+            "blocking": true,
+            "enabled": true,
+            "source": "Completion"
+          },
+          {
+            "name": "Protected Material Code",
+            "blocking": false,
+            "enabled": true,
+            "source": "Completion"
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default/51962712-b646-421d-ace9-6a73a64ea08b-azureml')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_stmscaihub777610045408_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default/51962712-b646-421d-ace9-6a73a64ea08b-azureml-blobstore')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_stmscaihub777610045408_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_mscstorage1234_name'), '/default/audio-files')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_mscstorage1234_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mscstorage1234_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default/insights-logs-auditevent')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_stmscaihub777610045408_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default/insights-metrics-pt1m')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_stmscaihub777610045408_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "None"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/blobServices/containers",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_mscstorage1234_name'), '/default/test-1')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/blobServices', parameters('storageAccounts_mscstorage1234_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_mscstorage1234_name'))]"
+      ],
+      "properties": {
+        "immutableStorageWithVersioning": {
+          "enabled": false
+        },
+        "defaultEncryptionScope": "$account-encryption-key",
+        "denyEncryptionScopeOverride": false,
+        "publicAccess": "Blob"
+      }
+    },
+    {
+      "type": "Microsoft.Storage/storageAccounts/fileServices/shares",
+      "apiVersion": "2024-01-01",
+      "name": "[concat(parameters('storageAccounts_stmscaihub777610045408_name'), '/default/51962712-b646-421d-ace9-6a73a64ea08b-code')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts/fileServices', parameters('storageAccounts_stmscaihub777610045408_name'), 'default')]",
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]"
+      ],
+      "properties": {
+        "accessTier": "TransactionOptimized",
+        "shareQuota": 102400,
+        "enabledProtocols": "SMB"
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[parameters('workspaces_msc_ai_hub_name')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]",
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]"
+      ],
+      "tags": {
+        "__SYSTEM__CognitiveSearch_AzureAISearch": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge/providers/Microsoft.Search/searchServices/msc-ai-search777610045408",
+        "__SYSTEM__AzureOpenAI_msc-ai-serv777610045408_aoai": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge/providers/Microsoft.CognitiveServices/accounts/msc-ai-serv777610045408",
+        "__SYSTEM__AIServices_msc-ai-serv777610045408": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge/providers/Microsoft.CognitiveServices/accounts/msc-ai-serv777610045408"
+      },
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "kind": "Hub",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "friendlyName": "[parameters('workspaces_msc_ai_hub_name')]",
+        "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]",
+        "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]",
+        "hbiWorkspace": false,
+        "managedNetwork": {
+          "isolationMode": "Disabled"
+        },
+        "allowRoleAssignmentOnRG": true,
+        "v1LegacyMode": false,
+        "publicNetworkAccess": "Enabled",
+        "ipAllowlist": [],
+        "discoveryUrl": "https://eastus.api.azureml.ms/discovery",
+        "EnableSoftwareBillOfMaterials": false,
+        "associatedWorkspaces": [
+          "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_proj_name'))]"
+        ],
+        "workspaceHubConfig": {
+          "defaultWorkspaceResourceGroup": "/subscriptions/6738d587-ec2b-4c45-9e52-01f6c7a252b3/resourceGroups/rg-ms-challenge"
+        },
+        "enableDataIsolation": true,
+        "systemDatastoresAuthMode": "accesskey",
+        "enableServiceSideCMKEncryption": false
+      }
+    },
+    {
+      "type": "Microsoft.MachineLearningServices/workspaces",
+      "apiVersion": "2025-01-01-preview",
+      "name": "[parameters('workspaces_msc_ai_proj_name')]",
+      "location": "eastus",
+      "dependsOn": [
+        "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]",
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]",
+        "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]"
+      ],
+      "sku": {
+        "name": "Basic",
+        "tier": "Basic"
+      },
+      "kind": "Project",
+      "identity": {
+        "type": "SystemAssigned"
+      },
+      "properties": {
+        "friendlyName": "[parameters('workspaces_msc_ai_proj_name')]",
+        "storageAccount": "[resourceId('Microsoft.Storage/storageAccounts', parameters('storageAccounts_stmscaihub777610045408_name'))]",
+        "keyVault": "[resourceId('Microsoft.KeyVault/vaults', parameters('vaults_kv_mscaihub777610045408_name'))]",
+        "hbiWorkspace": false,
+        "managedNetwork": {
+          "isolationMode": "Disabled"
+        },
+        "allowRoleAssignmentOnRG": false,
+        "v1LegacyMode": false,
+        "publicNetworkAccess": "Enabled",
+        "ipAllowlist": [],
+        "discoveryUrl": "https://eastus.api.azureml.ms/discovery",
+        "EnableSoftwareBillOfMaterials": false,
+        "hubResourceId": "[resourceId('Microsoft.MachineLearningServices/workspaces', parameters('workspaces_msc_ai_hub_name'))]",
+        "enableDataIsolation": true,
+        "systemDatastoresAuthMode": "accesskey",
+        "enableServiceSideCMKEncryption": false
+      }
+    }
+  ]
+}
