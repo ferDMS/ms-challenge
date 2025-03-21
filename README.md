@@ -29,7 +29,7 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 | Real-time problem-solving                 | Job Suggestions / AI Insights                                      |
 
 
-## Architecture
+## Architecture / Tech Stack
 
 WorkAble AI leverages multiple Azure services to deliver a comprehensive solution:
 
@@ -46,6 +46,7 @@ WorkAble AI leverages multiple Azure services to deliver a comprehensive solutio
 - **Microsoft Outlook Calendar:** Integrates calendar data to manage sessions and schedule meetings.
 - **React and Fluent UI:** Builds the user-friendly frontend application.
 - **Flask and Python:** Power the backend API to handle data processing and AI interactions.
+
 
 ## Responsable AI
 
