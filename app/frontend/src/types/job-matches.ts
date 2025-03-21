@@ -1,5 +1,3 @@
-import { JobStatus } from "@/types/jobs";
-
 // Job match status type
 export type JobMatchStatus =
   | "considering"

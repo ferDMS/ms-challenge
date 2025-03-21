@@ -31,7 +31,6 @@ import {
   ArrowSortDownRegular,
   ArrowSortUpRegular,
   ArrowSortRegular,
-  PeopleRegular,
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { getParticipants } from "@/api/participants";

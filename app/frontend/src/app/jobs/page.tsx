@@ -30,9 +30,6 @@ import {
   ArrowSortDownRegular,
   ArrowSortUpRegular,
   ArrowSortRegular,
-  BuildingRegular,
-  CalendarRegular,
-  LocationRegular,
 } from "@fluentui/react-icons";
 import { useRouter } from "next/navigation";
 import { getJobs } from "@/api/jobs";

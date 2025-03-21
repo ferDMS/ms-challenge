@@ -7,8 +7,6 @@ import {
   Text,
   Title2,
   Title3,
-  Badge,
-  Divider,
   Button,
   makeStyles,
   tokens,
