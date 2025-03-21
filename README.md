@@ -145,7 +145,6 @@ The application will be available at http://localhost:3000.
 ## Resources
 
 - [Environment Setup Guide](./docs/environment-setup.md)
-- [Azure OpenAI Service](https://learn.microsoft.com/azure/cognitive-services/openai/overview)
 - [Azure AI Search](https://learn.microsoft.com/azure/search/search-what-is-azure-search)
 - [Supported Employment Best Practices](./docs/supported_employment/)
 
