@@ -15,7 +15,6 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 - **Participant Management**: Complete profiles with skills, preferences, and employment history
 - **Smart Session Management**: Schedule, record, and analyze coaching sessions
 - **Intelligent Job Matching**: AI-powered recommendations based on participants' abilities and preferences
-- **Document Processing**: Extract information from forms and documents using Azure AI Document Intelligence
 - **Coaching Insights**: AI-generated observations and action suggestions for personalized support
 - **Interactive Dashboard**: Filter and sort participants by employment stage and view key statistics
 - **Calendar Integration**: Coordinate and track sessions with participants
@@ -35,18 +34,52 @@ WorkAble AI leverages multiple Azure services to deliver a comprehensive solutio
 
 ![Alt Text](./assets/architecture_rounded.png)
 
-- **Azure AI Search:** Enhances job matching by efficiently retrieving job opportunities based on participant's information.
-- **Azure Cosmos DB:** Stores unstructured data about participants, and job opportunities (json files).
-- **Azure Blob Storage:** Manages unstructured document storage such as session recordings.
-- **Azure Container Instances:** Deploys backend and frontend applications using Docker containers.
-- **Azure Container Registry:** Stores and manages container images for streamlined deployment.
-- **Azure GitHub Actions:** Automates build, test, and deployment pipelines for continuous integration and delivery.
-- **AI Speech:** Provides speech recognition capabilities for analyzing meeting conversations.
-- **AI Language:** Supports natural language processing for extracting insights from conversations given by meetings.
-- **Microsoft Outlook Calendar:** Integrates calendar data to manage sessions and schedule meetings.
-- **React and Fluent UI:** Builds the user-friendly frontend application.
-- **Flask and Python:** Power the backend API to handle data processing and AI interactions.
+### Repo
 
+Serves as the central code repository, housing both the frontend and backend code. Ensures version control and collaborative development workflows.
+
+- **GitHub**: Stores and manages the codebase, issues, and pull requests.  
+- **Next.js / React**: Frontend framework and library for building interactive user interfaces.  
+- **Fluent UI**: Provides a consistent design language and UI components.  
+- **Flask / Python**: Backend framework and language for handling server-side logic and API routes.  
+- **Docker**: Containerizes the application for consistent and portable deployments.
+
+### Deployment
+
+Automates building, testing, and deploying both the frontend and backend. Ensures the latest code changes are continuously integrated and delivered.
+
+- **GitHub Actions**: Automates CI/CD pipelines (build, test, and deploy).  
+- **Azure Container Registry**: Stores Docker images for the frontend and backend.  
+- **Azure Container Instances**: Hosts and runs the containerized applications in a managed environment.
+
+---
+
+### Storage
+
+Manages structured and unstructured data, including documents, media, and user information. Ensures secure, scalable data access for the platform.
+
+- **Azure Blob Storage**: Stores unstructured data such as session recordings and uploaded files.  
+- **Azure Cosmos DB**: Stores participant profiles, job listings, and other structured data in a NoSQL format.
+
+---
+
+### Job Match
+
+Analyzes participant profiles and job listings to provide intelligent job recommendations. Leverages AI-driven search and language models to match skills and preferences accurately.
+
+- **Azure AI Search**: Retrieves and ranks relevant job postings based on participant data.  
+- **OpenAI / GPT-based Models**: Enhances job-matching logic with advanced language understanding.
+
+
+### Meeting Analysis
+  
+Transcribes and processes meeting conversations for insights and action items. Assists job coaches by generating real-time suggestions and storing key discussion points.
+
+- **AI Speech**: Converts spoken content into text for further analysis.  
+- **AI Language**: Extracts entities, sentiments, and insights from transcribed text.  
+- **Calendar Integration**: Synchronizes meeting schedules and notifications with Microsoft Outlook.
+
+---
 
 ## Responsable AI
 
