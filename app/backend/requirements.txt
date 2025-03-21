@@ -6,6 +6,7 @@ anyio==4.9.0
 asyncio==3.4.3
 attrs==25.3.0
 azure-ai-inference==1.0.0b9
+azure-ai-textanalytics==5.3.0
 azure-common==1.1.28
 azure-core==1.32.0
 azure-core-tracing-opentelemetry==1.0.0b11
