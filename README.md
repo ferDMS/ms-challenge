@@ -117,6 +117,15 @@ The application will be available at http://localhost:3000.
 - **Job Listing**: Browse and assign job opportunities
 - **Calendar View**: Manage upcoming sessions and availability
 
+## Problematics and its Solutions
+
+| **Problematics**                               | **Solutions**                                          |
+|------------------------------------------------|--------------------------------------------------------|
+| Struggling to manage administrative tasks      | Calendar                                               |
+| Personalized support                           | Group of tables and forms (Sessions, Participants, Jobs) |
+| Real-time problem-solving                      | Job Suggestions                                        |
+|                                                | AI Insights                                            |
+
 ## Future Enhancements
 
 - **Voice Transcription**: Automatic transcription and analysis of coaching sessions
