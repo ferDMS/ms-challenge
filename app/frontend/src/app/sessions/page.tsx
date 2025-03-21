@@ -83,16 +83,16 @@ const useStyles = makeStyles({
     fontWeight: tokens.fontWeightSemibold,
   },
   completed: {
-    backgroundColor: tokens.colorPaletteGreenBackground1,
-    color: tokens.colorPaletteGreenForeground1,
+    backgroundColor: tokens.colorPaletteGreenBackground2,
+    color: tokens.colorPaletteGreenForeground2,
   },
   scheduled: {
-    backgroundColor: tokens.colorPaletteYellowBackground1,
-    color: tokens.colorPaletteYellowForeground1,
+    backgroundColor: tokens.colorPaletteYellowBackground2,
+    color: tokens.colorPaletteYellowForeground2,
   },
   cancelled: {
-    backgroundColor: tokens.colorPaletteRedBackground1,
-    color: tokens.colorPaletteRedForeground1,
+    backgroundColor: tokens.colorPaletteRedBackground2,
+    color: tokens.colorPaletteRedForeground2,
   },
   emptyState: {
     marginTop: "40px",
@@ -125,6 +125,28 @@ const useStyles = makeStyles({
     display: "flex",
     alignItems: "center",
     gap: "8px",
+  },
+  // Column width styles
+  titleColumn: {
+    width: "20%", // Bigger
+  },
+  participantColumn: {
+    width: "20%", // Bigger
+  },
+  locationColumn: {
+    width: "20%", // Bigger
+  },
+  typeColumn: {
+    width: "10%", // Slightly smaller
+  },
+  dateColumn: {
+    width: "10%", // Smaller
+  },
+  timeColumn: {
+    width: "10%", // Smaller
+  },
+  statusColumn: {
+    width: "10%", // Smaller
   },
 });
 
@@ -469,7 +491,7 @@ export default function SessionsPage() {
           <Table aria-label="Sessions table">
             <TableHeader>
               <TableRow>
-                <TableHeaderCell>
+                <TableHeaderCell className={styles.titleColumn}>
                   <div
                     className={styles.sortableHeader}
                     onClick={() => handleSort("title")}
@@ -477,7 +499,7 @@ export default function SessionsPage() {
                     Session Title {getSortIcon("title")}
                   </div>
                 </TableHeaderCell>
-                <TableHeaderCell>
+                <TableHeaderCell className={styles.participantColumn}>
                   <div
                     className={styles.sortableHeader}
                     onClick={() => handleSort("participantName")}
@@ -485,31 +507,7 @@ export default function SessionsPage() {
                     Participant {getSortIcon("participantName")}
                   </div>
                 </TableHeaderCell>
-                <TableHeaderCell>
-                  <div
-                    className={styles.sortableHeader}
-                    onClick={() => handleSort("date")}
-                  >
-                    Date {getSortIcon("date")}
-                  </div>
-                </TableHeaderCell>
-                <TableHeaderCell>
-                  <div
-                    className={styles.sortableHeader}
-                    onClick={() => handleSort("startTime")}
-                  >
-                    Time {getSortIcon("startTime")}
-                  </div>
-                </TableHeaderCell>
-                <TableHeaderCell>
-                  <div
-                    className={styles.sortableHeader}
-                    onClick={() => handleSort("type")}
-                  >
-                    Type {getSortIcon("type")}
-                  </div>
-                </TableHeaderCell>
-                <TableHeaderCell>
+                <TableHeaderCell className={styles.locationColumn}>
                   <div
                     className={styles.sortableHeader}
                     onClick={() => handleSort("location")}
@@ -517,7 +515,31 @@ export default function SessionsPage() {
                     Location {getSortIcon("location")}
                   </div>
                 </TableHeaderCell>
-                <TableHeaderCell>
+                <TableHeaderCell className={styles.typeColumn}>
+                  <div
+                    className={styles.sortableHeader}
+                    onClick={() => handleSort("type")}
+                  >
+                    Type {getSortIcon("type")}
+                  </div>
+                </TableHeaderCell>
+                <TableHeaderCell className={styles.dateColumn}>
+                  <div
+                    className={styles.sortableHeader}
+                    onClick={() => handleSort("date")}
+                  >
+                    Date {getSortIcon("date")}
+                  </div>
+                </TableHeaderCell>
+                <TableHeaderCell className={styles.timeColumn}>
+                  <div
+                    className={styles.sortableHeader}
+                    onClick={() => handleSort("startTime")}
+                  >
+                    Time {getSortIcon("startTime")}
+                  </div>
+                </TableHeaderCell>
+                <TableHeaderCell className={styles.statusColumn}>
                   <div
                     className={styles.sortableHeader}
                     onClick={() => handleSort("status")}
@@ -534,12 +556,12 @@ export default function SessionsPage() {
                   onClick={() => handleRowClick(session.id)}
                   style={{ cursor: "pointer" }}
                 >
-                  <TableCell>
+                  <TableCell className={styles.titleColumn}>
                     <TableCellLayout>
                       <Link>{session.title}</Link>
                     </TableCellLayout>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className={styles.participantColumn}>
                     <TableCellLayout
                       media={
                         <Avatar
@@ -557,13 +579,21 @@ export default function SessionsPage() {
                       {session.participantName}
                     </TableCellLayout>
                   </TableCell>
-                  <TableCell>{formatDate(new Date(session.date))}</TableCell>
-                  <TableCell>{`${session.startTime} - ${session.endTime}`}</TableCell>
-                  <TableCell>
+                  <TableCell className={styles.locationColumn}>
+                    {session.location}
+                  </TableCell>
+                  <TableCell className={styles.typeColumn}>
                     {getDisplayValue("sessionType", session.type)}
                   </TableCell>
-                  <TableCell>{session.location}</TableCell>
-                  <TableCell>{renderStatusBadge(session.status)}</TableCell>
+                  <TableCell className={styles.dateColumn}>
+                    {formatDate(new Date(session.date))}
+                  </TableCell>
+                  <TableCell
+                    className={styles.timeColumn}
+                  >{`${session.startTime} - ${session.endTime}`}</TableCell>
+                  <TableCell className={styles.statusColumn}>
+                    {renderStatusBadge(session.status)}
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

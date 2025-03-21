@@ -82,37 +82,29 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase200,
     fontWeight: tokens.fontWeightSemibold,
   },
-  seeking: {
-    backgroundColor: tokens.colorPaletteYellowBackground1,
-    color: tokens.colorPaletteYellowForeground1,
+  initial: {
+    backgroundColor: tokens.colorPaletteBlueBackground2,
+    color: tokens.colorPaletteBlueForeground2,
   },
   employed: {
-    backgroundColor: tokens.colorPaletteGreenBackground1,
-    color: tokens.colorPaletteGreenForeground1,
+    backgroundColor: tokens.colorPaletteGreenBackground2,
+    color: tokens.colorPaletteGreenForeground2,
   },
   training: {
-    backgroundColor: tokens.colorPaletteBerryBackground1,
-    color: tokens.colorPaletteBerryForeground1,
+    backgroundColor: tokens.colorPaletteBerryBackground2,
+    color: tokens.colorPaletteBerryForeground2,
   },
   "job-search": {
-    backgroundColor: tokens.colorPaletteMarigoldBackground1,
-    color: tokens.colorPaletteMarigoldForeground1,
-  },
-  "job-matching": {
-    backgroundColor: tokens.colorPaletteDarkOrangeBackground1,
-    color: tokens.colorPaletteDarkOrangeForeground1,
+    backgroundColor: tokens.colorPaletteMarigoldBackground2,
+    color: tokens.colorPaletteMarigoldForeground2,
   },
   "interview-preparation": {
     backgroundColor: tokens.colorPaletteLilacBackground2,
     color: tokens.colorPaletteLilacForeground2,
   },
-  "post-employment-support": {
-    backgroundColor: tokens.colorPaletteLightTealBackground2,
-    color: tokens.colorPaletteLightTealForeground2,
-  },
   inactive: {
-    backgroundColor: tokens.colorPaletteRedBackground1,
-    color: tokens.colorPaletteRedForeground1,
+    backgroundColor: tokens.colorPaletteRedBackground2,
+    color: tokens.colorPaletteRedForeground2,
   },
   emptyState: {
     marginTop: "40px",
@@ -146,23 +138,22 @@ const useStyles = makeStyles({
   },
   // Add column width styles
   nameColumn: {
-    width: "25%",
-    minWidth: "250px",
+    width: "20%",
   },
   statusColumn: {
-    width: "15%",
+    width: "10%",
     minWidth: "120px",
   },
   disabilityTypeColumn: {
-    width: "18%",
+    width: "15%",
     minWidth: "180px",
   },
   employmentGoalColumn: {
-    width: "25%",
+    width: "30%",
     minWidth: "200px",
   },
   metricsColumn: {
-    width: "8%",
+    width: "12.5%",
     minWidth: "80px",
     textAlign: "center",
   },
@@ -302,8 +293,8 @@ export default function ParticipantsPage() {
   const renderStatusBadge = (status: EmploymentCycleStage) => {
     let className = "";
 
-    // Map status to style
-    className = styles[status];
+    // Map status to style with fallback for missing styles
+    className = styles[status as keyof typeof styles] || "";
 
     return (
       <span className={`${styles.statusBadge} ${className}`}>
@@ -449,12 +440,12 @@ export default function ParticipantsPage() {
                     Name {getSortIcon("fullName")}
                   </div>
                 </TableHeaderCell>
-                <TableHeaderCell className={styles.statusColumn}>
+                <TableHeaderCell className={styles.employmentGoalColumn}>
                   <div
                     className={styles.sortableHeader}
-                    onClick={() => handleSort("currentStatus")}
+                    onClick={() => handleSort("employmentGoal")}
                   >
-                    Status {getSortIcon("currentStatus")}
+                    Employment Goal {getSortIcon("employmentGoal")}
                   </div>
                 </TableHeaderCell>
                 <TableHeaderCell className={styles.disabilityTypeColumn}>
@@ -465,12 +456,12 @@ export default function ParticipantsPage() {
                     Disability Type {getSortIcon("disabilityType")}
                   </div>
                 </TableHeaderCell>
-                <TableHeaderCell className={styles.employmentGoalColumn}>
+                <TableHeaderCell className={styles.statusColumn}>
                   <div
                     className={styles.sortableHeader}
-                    onClick={() => handleSort("employmentGoal")}
+                    onClick={() => handleSort("currentStatus")}
                   >
-                    Employment Goal {getSortIcon("employmentGoal")}
+                    Status {getSortIcon("currentStatus")}
                   </div>
                 </TableHeaderCell>
                 <TableHeaderCell className={styles.metricsColumn}>
@@ -514,14 +505,10 @@ export default function ParticipantsPage() {
                       }
                     >
                       <Link>{participant.fullName}</Link>
-                      <br />
-                      <Text size={200} as="span">
-                        {participant.email}
-                      </Text>
                     </TableCellLayout>
                   </TableCell>
-                  <TableCell className={styles.statusColumn}>
-                    {renderStatusBadge(participant.currentStatus)}
+                  <TableCell className={styles.employmentGoalColumn}>
+                    {participant.employmentGoal}
                   </TableCell>
                   <TableCell className={styles.disabilityTypeColumn}>
                     {getDisplayValue(
@@ -529,21 +516,36 @@ export default function ParticipantsPage() {
                       participant.disabilityType
                     )}
                   </TableCell>
-                  <TableCell className={styles.employmentGoalColumn}>
-                    {participant.employmentGoal}
+                  <TableCell className={styles.statusColumn}>
+                    {renderStatusBadge(participant.currentStatus)}
                   </TableCell>
                   <TableCell className={styles.metricsColumn}>
                     <Badge
                       appearance="filled"
-                      color="informative"
+                      color={
+                        !participant.sessionCount
+                          ? "informative"
+                          : participant.sessionCount < 3
+                          ? "warning"
+                          : "success"
+                      }
                       shape="rounded"
-                      icon={<PeopleRegular />}
                     >
                       {participant.sessionCount || 0}
                     </Badge>
                   </TableCell>
                   <TableCell className={styles.metricsColumn}>
-                    <Badge appearance="filled" color="success" shape="rounded">
+                    <Badge
+                      appearance="filled"
+                      color={
+                        !participant.jobMatchCount
+                          ? "informative"
+                          : participant.jobMatchCount < 3
+                          ? "warning"
+                          : "success"
+                      }
+                      shape="rounded"
+                    >
                       {participant.jobMatchCount || 0}
                     </Badge>
                   </TableCell>

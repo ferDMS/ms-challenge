@@ -319,19 +319,16 @@ export default function JobsPage() {
     );
   };
 
-  // Format salary with currency
-  const formatSalary = (salary: number) => {
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 0,
-    }).format(salary);
-  };
-
-  // Render employment type as a badge
+  // Render employment type as a badge with conditional styling
   const renderEmploymentTypeBadge = (employmentType: string) => {
+    const isFullTime = employmentType === "full-time";
+
     return (
-      <span className={styles.typeBadge}>
+      <span
+        className={`${styles.typeBadge} ${
+          isFullTime ? styles.active : styles.filled
+        }`}
+      >
         {getJobDisplayValue("employmentType", employmentType)}
       </span>
     );

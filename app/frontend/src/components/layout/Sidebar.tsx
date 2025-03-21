@@ -13,10 +13,10 @@ import {
   Calendar24Regular,
   Calendar24Filled,
   People24Regular,
-  People24Filled,
+  // People24Filled,
   PersonAdd24Regular,
   Briefcase24Regular,
-  Briefcase24Filled,
+  // Briefcase24Filled,
   Add24Regular,
   ChevronRight24Regular,
   ChevronDown24Regular,
@@ -174,8 +174,8 @@ export const Sidebar: React.FC = () => {
         {
           href: "/participants",
           text: "All Participants",
-          icon: <People24Regular />,
-          activeIcon: <People24Filled />,
+          icon: <AppsListDetail24Regular />,
+          activeIcon: <AppsListDetail24Regular />,
         },
         {
           href: "/participants/new",
@@ -193,8 +193,8 @@ export const Sidebar: React.FC = () => {
         {
           href: "/jobs",
           text: "All Jobs",
-          icon: <Briefcase24Regular />,
-          activeIcon: <Briefcase24Filled />,
+          icon: <AppsListDetail24Regular />,
+          activeIcon: <AppsListDetail24Regular />,
         },
         {
           href: "/jobs/new",
