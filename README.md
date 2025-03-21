@@ -1,12 +1,14 @@
 # WorkAble AI: Empowering Job Coaches, Enabling Careers
 
-![WorkAble AI Dashboard](https://placeholder-for-project-screenshot.com)
+![Preseting Workable AI](./assets/main_page_rounded.png)
 
 ## Overview
 
 WorkAble AI is an intelligent platform designed to support employment coaches who work with people with disabilities. By leveraging Azure AI services, the system enhances coach productivity, streamlines administrative tasks, and improves job matching outcomes. Our solution addresses the critical challenge faced by supported employment programs: limited resources for job coaches who must simultaneously manage documentation, deliver personalized training, solve emerging problems, and provide motivational support to participants.
 
 Through intelligent automation and AI-powered insights, WorkAble AI allows coaches to focus more on meaningful interactions with participants and less on administrative burdens, ultimately improving employment outcomes for people with disabilities.
+
+![Workable AI Dashboard](./assets/dashboard_rounded.png)
 
 ## Key Features
 
@@ -119,12 +121,11 @@ The application will be available at http://localhost:3000.
 
 ## Problematics and Solutions
 
-| **Problematics**                               | **Solutions**                                          |
-|------------------------------------------------|--------------------------------------------------------|
-| Struggling to manage administrative tasks      | Calendar, Group of tables and forms (Sessions, Participants, Jobs) |
-| Personalized support                           | Job Suggestions / AI Insights                         |
-| Real-time problem-solving                     | Job Suggestions / AI Insights                         |
-
+| **Problematics**                          | **Solutions**                                                      |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| Struggling to manage administrative tasks | Calendar, Group of tables and forms (Sessions, Participants, Jobs) |
+| Personalized support                      | Job Suggestions / AI Insights                                      |
+| Real-time problem-solving                 | Job Suggestions / AI Insights                                      |
 
 ## Future Enhancements
 
