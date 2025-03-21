@@ -123,37 +123,33 @@ const useStyles = makeStyles({
     fontSize: tokens.fontSizeBase200,
     fontWeight: tokens.fontWeightSemibold,
   },
-  seeking: {
-    backgroundColor: tokens.colorPaletteYellowBackground1,
-    color: tokens.colorPaletteYellowForeground1,
+  initial: {
+    backgroundColor: tokens.colorPaletteBlueBackground2,
+    color: tokens.colorPaletteBlueForeground2,
   },
   employed: {
-    backgroundColor: tokens.colorPaletteGreenBackground1,
-    color: tokens.colorPaletteGreenForeground1,
+    backgroundColor: tokens.colorPaletteGreenBackground2,
+    color: tokens.colorPaletteGreenForeground2,
   },
   training: {
-    backgroundColor: tokens.colorPaletteBerryBackground1,
-    color: tokens.colorPaletteBerryForeground1,
+    backgroundColor: tokens.colorPaletteBerryBackground2,
+    color: tokens.colorPaletteBerryForeground2,
   },
   "job-search": {
-    backgroundColor: tokens.colorPaletteMarigoldBackground1,
-    color: tokens.colorPaletteMarigoldForeground1,
-  },
-  "job-matching": {
-    backgroundColor: tokens.colorPaletteDarkOrangeBackground1,
-    color: tokens.colorPaletteDarkOrangeForeground1,
+    backgroundColor: tokens.colorPaletteMarigoldBackground2,
+    color: tokens.colorPaletteMarigoldForeground2,
   },
   "interview-preparation": {
     backgroundColor: tokens.colorPaletteLilacBackground2,
     color: tokens.colorPaletteLilacForeground2,
   },
-  "post-employment-support": {
-    backgroundColor: tokens.colorPaletteLightTealBackground2,
-    color: tokens.colorPaletteLightTealForeground2,
-  },
   inactive: {
-    backgroundColor: tokens.colorPaletteRedBackground1,
-    color: tokens.colorPaletteRedForeground1,
+    backgroundColor: tokens.colorPaletteRedBackground2,
+    color: tokens.colorPaletteRedForeground2,
+  },
+  emptyState: {
+    marginTop: "40px",
+    textAlign: "center",
   },
   // Job match status styles
   matchStatusBadge: {
@@ -179,16 +175,16 @@ const useStyles = makeStyles({
     color: tokens.colorPalettePurpleForeground2,
   },
   offered: {
-    backgroundColor: tokens.colorPaletteDarkOrangeBackground1,
-    color: tokens.colorPaletteDarkOrangeForeground1,
+    backgroundColor: tokens.colorPaletteDarkOrangeBackground2,
+    color: tokens.colorPaletteDarkOrangeForeground2,
   },
   accepted: {
-    backgroundColor: tokens.colorPaletteGreenBackground1,
-    color: tokens.colorPaletteGreenForeground1,
+    backgroundColor: tokens.colorPaletteGreenBackground2,
+    color: tokens.colorPaletteGreenForeground2,
   },
   rejected: {
-    backgroundColor: tokens.colorPaletteRedBackground1,
-    color: tokens.colorPaletteRedForeground1,
+    backgroundColor: tokens.colorPaletteRedBackground2,
+    color: tokens.colorPaletteRedForeground2,
   },
   // Goal status styles
   goalStatusBadge: {
@@ -202,16 +198,16 @@ const useStyles = makeStyles({
     color: tokens.colorNeutralForeground3,
   },
   "in-progress": {
-    backgroundColor: tokens.colorPaletteBerryBackground1,
-    color: tokens.colorPaletteBerryForeground1,
+    backgroundColor: tokens.colorPaletteBerryBackground2,
+    color: tokens.colorPaletteBerryForeground2,
   },
   completed: {
-    backgroundColor: tokens.colorPaletteGreenBackground1,
-    color: tokens.colorPaletteGreenForeground1,
+    backgroundColor: tokens.colorPaletteGreenBackground2,
+    color: tokens.colorPaletteGreenForeground2,
   },
   abandoned: {
-    backgroundColor: tokens.colorPaletteRedBackground1,
-    color: tokens.colorPaletteRedForeground1,
+    backgroundColor: tokens.colorPaletteRedBackground2,
+    color: tokens.colorPaletteRedForeground2,
   },
 });
 

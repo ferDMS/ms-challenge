@@ -95,16 +95,16 @@ const useStyles = makeStyles({
     marginTop: "16px",
   },
   statusScheduled: {
-    backgroundColor: tokens.colorStatusWarningBackground1,
-    color: tokens.colorStatusWarningForeground1,
+    backgroundColor: tokens.colorStatusWarningBackground2,
+    color: tokens.colorStatusWarningForeground2,
   },
   statusCompleted: {
-    backgroundColor: tokens.colorStatusSuccessBackground1,
-    color: tokens.colorStatusSuccessForeground1,
+    backgroundColor: tokens.colorStatusSuccessBackground2,
+    color: tokens.colorStatusSuccessForeground2,
   },
   statusCancelled: {
-    backgroundColor: tokens.colorStatusDangerBackground1,
-    color: tokens.colorStatusDangerForeground1,
+    backgroundColor: tokens.colorStatusDangerBackground2,
+    color: tokens.colorStatusDangerForeground2,
   },
   sentimentPositive: {
     backgroundColor: tokens.colorPaletteLightGreenBackground1,

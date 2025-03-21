@@ -1,12 +1,10 @@
 // Employment cycle stage types
 export type EmploymentCycleStage =
-  | "seeking"
+  | "initial"
   | "employed"
   | "training"
   | "job-search"
-  | "job-matching"
   | "interview-preparation"
-  | "post-employment-support"
   | "inactive";
 
 // Goal status type
