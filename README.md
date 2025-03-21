@@ -117,14 +117,14 @@ The application will be available at http://localhost:3000.
 - **Job Listing**: Browse and assign job opportunities
 - **Calendar View**: Manage upcoming sessions and availability
 
-## Problematics and its Solutions
+## Problematics and Solutions
 
 | **Problematics**                               | **Solutions**                                          |
 |------------------------------------------------|--------------------------------------------------------|
-| Struggling to manage administrative tasks      | Calendar                                               |
-| Personalized support                           | Group of tables and forms (Sessions, Participants, Jobs) |
-| Real-time problem-solving                      | Job Suggestions                                        |
-|                                                | AI Insights                                            |
+| Struggling to manage administrative tasks      | Calendar, Group of tables and forms (Sessions, Participants, Jobs) |
+| Personalized support                           | Job Suggestions / AI Insights                         |
+| Real-time problem-solving                     | Job Suggestions / AI Insights                         |
+
 
 ## Future Enhancements
 
