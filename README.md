@@ -20,11 +20,20 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 - **Interactive Dashboard**: Filter and sort participants by employment stage and view key statistics
 - **Calendar Integration**: Coordinate and track sessions with participants
 
-## Architecture
+### Solution to problematics
+
+| **Problematics**                          | **Solutions**                                                      |
+| ----------------------------------------- | ------------------------------------------------------------------ |
+| Struggling to manage administrative tasks | Calendar, Group of tables and forms (Sessions, Participants, Jobs) |
+| Personalized support                      | Job Suggestions / AI Insights                                      |
+| Real-time problem-solving                 | Job Suggestions / AI Insights                                      |
+
+
+## Architecture / Tech Stack
 
 WorkAble AI leverages multiple Azure services to deliver a comprehensive solution:
 
-![Workable AI Architecture](./assets/architecture_rounded.png)
+![Alt Text](./assets/architecture_rounded.png)
 
 - **Azure AI Search:** Enhances job matching by efficiently retrieving job opportunities based on participant's information.
 - **Azure Cosmos DB:** Stores unstructured data about participants, and job opportunities (json files).
@@ -38,14 +47,20 @@ WorkAble AI leverages multiple Azure services to deliver a comprehensive solutio
 - **React and Fluent UI:** Builds the user-friendly frontend application.
 - **Flask and Python:** Power the backend API to handle data processing and AI interactions.
 
-## User Workflows
 
-### For Job Coaches
+## Responsable AI
 
-1. **Participant Registration**: Add new participants manually or through document processing
-2. **Session Management**: Schedule, record notes, and get AI-generated insights from coaching sessions
-3. **Job Matching**: View automatically suggested jobs based on participant skills and preferences
-4. **Progress Tracking**: Monitor participant progress through the employment cycle
+Microsoft has established seven core principles to ensure the responsible development and deployment of AI technologies. Below is a table outlining these principles and their presence in the development of the project.
+
+| **Problematics**                 | **Solutions**                                                      |
+|----------------------------------|-------------------------------------------------------------------|
+| Fairness                         |                                                                   |
+| Reliability and Safety           |                                                                   |
+| Privacy and Security             |                                                                   |
+| Inclusiveness                    |                                                                   |
+| Transparency                     |                                                                   |
+| Accountability                   |                                                                   |
+| Human Control and Oversight     |                                                                   |
 
 ## Getting Started
 
@@ -112,43 +127,9 @@ The application will be available at http://localhost:3000.
 /infra             # Infrastructure deployment templates
 ```
 
-### Key Components
-
-- **Participant Dashboard**: View and manage participant information
-- **Session Management**: Record and analyze coaching sessions
-- **Job Listing**: Browse and assign job opportunities
-- **Calendar View**: Manage upcoming sessions and availability
-
-## Problematics and Solutions
-
-| **Problematics**                          | **Solutions**                                                      |
-| ----------------------------------------- | ------------------------------------------------------------------ |
-| Struggling to manage administrative tasks | Calendar, Group of tables and forms (Sessions, Participants, Jobs) |
-| Personalized support                      | Job Suggestions / AI Insights                                      |
-| Real-time problem-solving                 | Job Suggestions / AI Insights                                      |
-
-## Future Enhancements
-
-- **Voice Transcription**: Automatic transcription and analysis of coaching sessions
-- **Mobile Application**: Enable on-the-go access for job coaches working in the field
-- **Advanced Analytics**: Deeper insights into coaching effectiveness and outcomes
-- **Expanded Job Sources**: Integration with additional job boards and employment databases
-- **Family Portal**: Secure access for families to view progress and contribute information
-
-## Technology Stack
-
-- **Frontend**: Next.js, TypeScript, Fluent UI React components
-- **Backend**: Node.js, Express
-- **AI/ML**: Azure OpenAI, Azure AI Document Intelligence
-- **Data Storage**: Azure Cosmos DB, Azure Blob Storage
-- **Search**: Azure AI Search
 
 ## Resources
 
 - [Environment Setup Guide](./docs/environment-setup.md)
 - [Azure AI Search](https://learn.microsoft.com/azure/search/search-what-is-azure-search)
 - [Supported Employment Best Practices](./docs/supported_employment/)
-
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
