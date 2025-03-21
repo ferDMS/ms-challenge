@@ -14,14 +14,14 @@ CONTAINERS = {
         'name': 'sessions',
         'partition_key': '/id'
     },
-    # 'jobs': {
-    #     'name': 'jobs', 
-    #     'partition_key': '/id'
-    # },
-    # 'job_matches': {
-    #     'name': 'job_matches',
-    #     'partition_key': '/participantId'
-    # },
+    'jobs': {
+        'name': 'jobs', 
+        'partition_key': '/id'
+    },
+    'job_matches': {
+        'name': 'job_matches',
+        'partition_key': '/participantId'
+    },
     # 'documents': {
     #     'name': 'documents',
     #     'partition_key': '/id'
