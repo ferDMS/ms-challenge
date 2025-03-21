@@ -1,18 +1,16 @@
 import { callAPI } from "@/utils/api";
-import { Job } from "@/types/jobs";
+import { Job, JobPreview } from "@/types/jobs";
 
 /**
  * Get all jobs with optional filters
  */
 export async function getJobs(filters?: {
-  status?: string;
-  employmentType?: string;
   industry?: string;
+  jobType?: string;
+  status?: string;
   location?: string;
 }) {
-  return callAPI<Job[]>("/api/jobs", {
-    params: filters,
-  });
+  return callAPI<JobPreview[]>("/api/jobs", { params: filters });
 }
 
 /**
@@ -58,14 +56,15 @@ export async function searchJobs(searchParams: {
   query?: string;
   skills?: string[];
   location?: string;
-  employmentType?: string;
+  jobType?: string;
+  industry?: string;
 }) {
   const params = {
     ...searchParams,
     skills: searchParams.skills?.join(","),
   };
 
-  return callAPI<Job[]>("/api/jobs/search", {
+  return callAPI<JobPreview[]>("/api/jobs/search", {
     params,
   });
 }

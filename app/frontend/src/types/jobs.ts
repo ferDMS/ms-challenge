@@ -58,6 +58,20 @@ export interface Job {
   applicationUrl?: string;
 }
 
+export interface JobPreview {
+  id: string;
+  title: string;
+  employer: string;
+  companyName: string;
+  location: string;
+  remoteOption: boolean;
+  employmentType: EmploymentType;
+  industry: string;
+  postedDate: string;
+  salary: number;
+  status: JobStatus;
+}
+
 // Job display mappings interface
 export interface JobMappings {
   status: {

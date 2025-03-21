@@ -37,7 +37,7 @@ import {
 import { useRouter } from "next/navigation";
 import { getJobs } from "@/api/jobs";
 import {
-  Job,
+  JobPreview,
   JobStatus,
   getJobDisplayValue,
   getJobOptionsForField,
@@ -168,15 +168,15 @@ type SortDirection = "asc" | "desc" | undefined;
 
 // Type for sort columns
 interface SortConfig {
-  key: keyof Job;
+  key: keyof JobPreview;
   direction: SortDirection;
 }
 
 export default function JobsPage() {
   const styles = useStyles();
   const router = useRouter();
-  const [jobs, setJobs] = useState<Job[]>([]);
-  const [filteredJobs, setFilteredJobs] = useState<Job[]>([]);
+  const [jobs, setJobs] = useState<JobPreview[]>([]);
+  const [filteredJobs, setFilteredJobs] = useState<JobPreview[]>([]);
   const [searchText, setSearchText] = useState("");
   const [selectedStatus, setSelectedStatus] = useState<string>("all");
   const [selectedEmploymentType, setSelectedEmploymentType] =
@@ -235,8 +235,7 @@ export default function JobsPage() {
         (job) =>
           job.title.toLowerCase().includes(searchLower) ||
           job.companyName.toLowerCase().includes(searchLower) ||
-          job.location.toLowerCase().includes(searchLower) ||
-          job.description.toLowerCase().includes(searchLower)
+          job.location.toLowerCase().includes(searchLower)
       );
     }
 
@@ -335,7 +334,7 @@ export default function JobsPage() {
   };
 
   // Enhanced sorting functionality
-  const handleSort = (key: keyof Job) => {
+  const handleSort = (key: keyof JobPreview) => {
     let direction: SortDirection = "asc";
 
     if (sortConfig.key === key) {
