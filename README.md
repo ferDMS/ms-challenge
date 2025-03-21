@@ -22,14 +22,14 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 
 WorkAble AI leverages multiple Azure services to deliver a comprehensive solution:
 
+![Alt Text](https://github.com/ferDMS/ms-challenge/blob/Jose/ArquitecturaWorkabeAI.png)
+
 - **Azure OpenAI**: Powers personalized recommendations and insights for coaches
 - **Azure AI Search**: Enables efficient job matching and participant information retrieval
 - **Azure AI Document Intelligence**: Extracts data from intake forms and documentation
 - **Azure Cosmos DB**: Stores structured data about participants, sessions, and job opportunities
 - **Azure App Service**: Hosts the web application frontend and backend APIs
 - **Azure Blob Storage**: Manages document storage and retrieval
-
-![Alt Text](https://github.com/ferDMS/ms-challenge/blob/Jose/ArquitecturaWorkabeAI.png)
 
 ## User Workflows
 
