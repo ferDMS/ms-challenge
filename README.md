@@ -24,7 +24,7 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 
 WorkAble AI leverages multiple Azure services to deliver a comprehensive solution:
 
-![Alt Text](https://github.com/ferDMS/ms-challenge/blob/Jose/ArquitecturaWorkabeAI.png)
+![Workable AI Architecture](./assets/architecture_rounded.png)
 
 - **Azure AI Search:** Enhances job matching by efficiently retrieving job opportunities based on participant's information.
 - **Azure Cosmos DB:** Stores unstructured data about participants, and job opportunities (json files).
