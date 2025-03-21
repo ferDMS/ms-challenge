@@ -79,7 +79,7 @@ def run(user_profile, save_to_file=False, output_filename="job_matches.json"):
     # Ejecutar la búsqueda semántica en Azure
     resultados = search_client.search(
         search_text=consulta,
-        top=3,
+        top=5,
         query_type="semantic",
         semantic_configuration_name="semantic-config"
     )

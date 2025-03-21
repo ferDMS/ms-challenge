@@ -800,7 +800,7 @@ export default function SessionDetail({
       <Divider className={styles.sectionDivider} />
 
       {/* Insights Section */}
-      <Title3>Insights</Title3>
+      <Title3>AI Insights</Title3>
       {session.status !== "completed" ? (
         <div className={styles.section}>
           <Text
