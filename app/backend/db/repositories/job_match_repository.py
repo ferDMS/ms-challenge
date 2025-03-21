@@ -4,7 +4,6 @@ import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
 from db.models.job_match import JobMatchStatus, MatchSource
-from services.job_matcher_.job_matching_service import JobMatchingService
 
 class JobMatchRepository:
     def __init__(self):
@@ -26,9 +25,6 @@ class JobMatchRepository:
             CONTAINERS['participants']['name'],
             CONTAINERS['participants']['partition_key']
         )
-        
-        # Initialize the job matching service
-        self.job_matching = JobMatchingService()
 
     def get_all_job_matches(self, limit: int = 100) -> List[Dict[str, Any]]:
         """Get all job matches with pagination"""

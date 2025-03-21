@@ -3,8 +3,6 @@ from ..config import CONTAINERS, DB_NAME
 import uuid
 from datetime import datetime
 from typing import List, Dict, Any, Optional
-from services.job_matcher_.ai_search_service import AISearchService
-from services.job_matcher_.job_matching_service import JobMatchingService
 
 class JobRepository:
     def __init__(self):
@@ -26,10 +24,6 @@ class JobRepository:
             CONTAINERS['participants']['name'],
             CONTAINERS['participants']['partition_key']
         )
-        
-        # Initialize services
-        self.ai_search = AISearchService()
-        self.job_matching = JobMatchingService()
 
     def get_all_jobs(self, 
                     status: Optional[str] = None, 

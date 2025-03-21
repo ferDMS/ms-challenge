@@ -74,6 +74,49 @@ export interface JobMatch {
   applicationDeadline?: string;
 }
 
+// New type for creating job matches
+export interface CreateJobMatchData {
+  participantId: string;
+  jobId: string;
+  status?: JobMatchStatus;
+  source?: MatchSource;
+  coachNotes?: string;
+  matchScore?: number;
+  compatibilityElements?: CompatibilityElement[];
+}
+
+// Define a type for job suggestions based on the API response
+export interface JobSuggestion {
+  id: string;
+  title: string;
+  employer: string;
+  employmentType: string;
+  location: string;
+  shortDescription: string;
+  matchScore: number;
+  compatibilityElements: {
+    category: string;
+    factor: string;
+    reasoning: string;
+    score: number;
+  }[];
+  participantAttributesUsed: {
+    accommodationsNeeded: string[];
+    currentStatus: string;
+    desiredHours: string;
+    disabilityType: string;
+    employmentGoal: string;
+    preferredIndustries: string[];
+    preferredLocations: string[];
+    primaryLanguage: string;
+    skills: {
+      soft: string[];
+      technical: string[];
+    };
+    transportationStatus: string;
+  };
+}
+
 // Job match display mappings interface
 export interface JobMatchMappings {
   status: {

@@ -1,0 +1,61 @@
+
+# ----------------------------
+# 3. Re-ranking con LLM (por ejemplo, OpenAI)
+# ----------------------------
+'''
+
+# This prompt provides instructions to the model. 
+# The prompt includes the query and the source, which are specified further down in the code.
+GROUNDED_PROMPT="""
+You are a friendly assistant that recommends jobs based on a user's profile which is the query.
+Indicate a very brief summary why you chose the jobs (From the sources listed) and show only the 'description', 'employmentType', 
+and 'location' jsons' fields.
+Answer ONLY with the facts listed in the list of sources below.
+Query: {query}
+Sources:\n{sources}
+"""
+
+# Corregido para usar los campos correctos de los resultados de trabajos
+sources_formatted = "\n".join([
+    f'Job {i+1}: Description: {job["description"]} | Employment Type: {job["employmentType"]} | Location: {job["location"]}' 
+    for i, job in enumerate(resultados_lista)
+])
+
+# Usando LangChain para la generación de respuestas
+chat_template = ChatPromptTemplate.from_messages([
+    HumanMessagePromptTemplate.from_template(GROUNDED_PROMPT)
+])
+
+# Crear el prompt formateado
+formatted_prompt = chat_template.format_messages(
+    query=consulta,
+    sources=sources_formatted
+)
+
+# Invocar el modelo a través de LangChain
+response = llm.invoke(formatted_prompt)
+
+# Mostrar la respuesta
+print(response.content)
+
+# ----------------------------
+# 4. Seleccionar los N mejores resultados (input: cantidad de documentos a obtener)
+# ----------------------------
+
+# Comentado temporalmente hasta que se implemente el re-ranking
+"""
+# Define la cantidad de documentos que se desean como output
+num_resultados = 3  # Por ejemplo, 5 documentos con mejor ranking
+
+# Reordenar los resultados basados en el llm_score (se podría combinar con azure_score si se desea)
+resultados_reordenados = sorted(resultados_lista, key=lambda x: x["llm_score"], reverse=True)
+
+# Seleccionar solo los mejores 'num_resultados'
+top_resultados = resultados_reordenados[:num_resultados]
+
+print("\nResultados reordenados según LLM (Top {}):".format(num_resultados))
+for trabajo in top_resultados:
+    print(f"ID: {trabajo['id']} - Título: {trabajo['title']} - LLM Score: {trabajo['llm_score']}")
+"""
+
+print("\nFin del proceso")'

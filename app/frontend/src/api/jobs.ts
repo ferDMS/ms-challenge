@@ -68,34 +68,3 @@ export async function searchJobs(searchParams: {
     params,
   });
 }
-
-/**
- * Get job match suggestions for a participant
- */
-export async function getJobSuggestionsForParticipant(participantId: string) {
-  return callAPI<Job[]>(`/api/job-matches/suggestions/${participantId}`);
-}
-
-/**
- * Create a job match between participant and job
- */
-export async function createJobMatch(data: {
-  participantId: string;
-  jobId: string;
-  status: string;
-}) {
-  return callAPI("/api/job-matches", {
-    method: "POST",
-    data,
-  });
-}
-
-/**
- * Update job match status
- */
-export async function updateJobMatchStatus(matchId: string, status: string) {
-  return callAPI(`/api/job-matches/${matchId}/status`, {
-    method: "PUT",
-    data: { status },
-  });
-}
