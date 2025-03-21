@@ -5,7 +5,7 @@ from azure.core.credentials import AzureKeyCredential
 from azure.search.documents import SearchClient
 
 # Cargar variables de entorno desde .env
-load_dotenv("config.env")
+load_dotenv(override=True)
 
 # ----------------------------
 # 1. Función para procesar el perfil de usuario
@@ -51,7 +51,7 @@ def process_user_profile(profile_json):
     return processed_profile, consulta
 
 # Azure Search client initialization (done once outside the function)
-admin_key = os.environ.get("AZURE_SEARCH_API_KEY")
+admin_key = os.environ.get("AZURE_SEARCH_KEY")
 index_name = os.environ.get("AZURE_SEARCH_INDEX")
 endpoint = os.environ.get("AZURE_SEARCH_ENDPOINT")
 

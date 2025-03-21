@@ -1,0 +1,41 @@
+{
+  "total_matches": 3,
+  "matches": [
+    {
+      "job_id": 1,
+      "match_score": 15.169348,
+      "job_details": {
+        "id": "job-792",
+        "title": "Caf\u00e9 Barista",
+        "employer": "BrewCrew Coffeehouse",
+        "description": "BrewCrew Coffeehouse seeks an enthusiastic Barista to prepare beverages, manage customer orders, and maintain a clean environment. No prior experience is necessary\u2014training provided! We foster an inclusive culture where team members are supported through mentorship and clear role guidance.",
+        "employmentType": "part-time",
+        "location": "Coyoac\u00e1n"
+      }
+    },
+    {
+      "job_id": 2,
+      "match_score": 12.231509,
+      "job_details": {
+        "id": "job-790",
+        "title": "Warehouse Inventory Associate",
+        "employer": "LogistiCo Warehousing",
+        "description": "LogistiCo is hiring an organized Inventory Associate to join our distribution center team. The ideal candidate will assist in managing inventory records, perform stock checks, and ensure accurate labeling. This role provides a structured work environment with clear instructions and regular breaks. We welcome applicants seeking supportive and inclusive workplaces.",
+        "employmentType": "full-time",
+        "location": "Industrial Park, Quer\u00e9taro"
+      }
+    },
+    {
+      "job_id": 3,
+      "match_score": 10.10437,
+      "job_details": {
+        "id": "job-789",
+        "title": "Retail Sales Assistant",
+        "employer": "MultiMart Stores",
+        "description": "MultiMart is seeking a friendly Sales Assistant to join our team at our downtown location. The ideal candidate will assist customers, maintain store displays, and process transactions in a supportive environment. This position offers flexible scheduling and comprehensive on-the-job training. We pride ourselves on being an inclusive workplace that accommodates diverse needs and abilities.",
+        "employmentType": "part-time",
+        "location": "Downtown Commercial District"
+      }
+    }
+  ]
+}
