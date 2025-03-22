@@ -10,6 +10,15 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 
 ![Workable AI Dashboard](./assets/dashboard_rounded.png)
 
+## Demo
+
+[Presentation Slides](./Workable%20AI%20Presentation.pdf)
+
+
+https://github.com/user-attachments/assets/97c04b2d-1143-4944-99df-d8f00cd793a1
+
+
+
 ## Key Features
 
 - **Participant Management**: Complete profiles with skills, preferences, and employment history
