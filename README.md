@@ -1,6 +1,12 @@
-# WorkAble AI: Empowering Job Coaches, Enabling Careers
+# WorkAble AI
+
+## Empowering Job Coaches, Enabling Careers
 
 ![Preseting Workable AI](./assets/main_page_rounded.png)
+
+### Experience WorkAble AI firsthand by visiting our live demo below:
+
+### [http://ms-challenge-frontend-aci.canadacentral.azurecontainer.io/](http://ms-challenge-frontend-aci.canadacentral.azurecontainer.io/)
 
 ## Overview
 
@@ -14,10 +20,7 @@ Through intelligent automation and AI-powered insights, WorkAble AI allows coach
 
 [Presentation Slides](./Workable%20AI%20Presentation.pdf)
 
-
 https://github.com/user-attachments/assets/97c04b2d-1143-4944-99df-d8f00cd793a1
-
-
 
 ## Key Features
 
