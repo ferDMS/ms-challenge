@@ -1,7 +1,7 @@
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
 name: Azure_Container_Deployment
 
@@ -10,15 +10,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       # checkout the repo
-      - name: "Checkout GitHub Action"
+      - name: 'Checkout GitHub Action'
         uses: actions/checkout@main
 
-      - name: "Login via Azure CLI"
+      - name: 'Login via Azure CLI'
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: "Login to Azure Container Registry"
+      - name: 'Login to Azure Container Registry'
         uses: azure/docker-login@v1
         with:
           login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
@@ -31,13 +31,13 @@ jobs:
           echo "${{ secrets.ENV_FILE }}" > app/backend/.env
 
       # Build and push the backend image
-      - name: "Build and push backend image"
+      - name: 'Build and push backend image'
         run: |
           docker build -f docker/Dockerfile.backend -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }} .
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-backend:${{ github.sha }}
 
       # Build and push the frontend image with PORT build argument
-      - name: "Build and push frontend image"
+      - name: 'Build and push frontend image'
         run: |
           docker build -f docker/Dockerfile.frontend \
             --build-arg PORT=80 \
@@ -45,7 +45,7 @@ jobs:
           docker push ${{ secrets.REGISTRY_LOGIN_SERVER }}/ms-challenge-frontend:${{ github.sha }}
 
       # Generate backend ACI YAML definition
-      - name: "Generate backend ACI definition"
+      - name: 'Generate backend ACI definition'
         run: |
           cat > backend-container.yaml << EOL
           apiVersion: 2019-12-01
@@ -80,7 +80,7 @@ jobs:
           EOL
 
       # Generate frontend ACI YAML definition
-      - name: "Generate frontend ACI definition"
+      - name: 'Generate frontend ACI definition'
         run: |
           cat > frontend-container.yaml << EOL
           apiVersion: 2019-12-01
@@ -115,7 +115,7 @@ jobs:
           EOL
 
       # Deploy backend to Azure Container Instances
-      - name: "Deploy backend to Azure Container Instances"
+      - name: 'Deploy backend to Azure Container Instances'
         run: |
           # Try to update first, create if it doesn't exist
           az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file backend-container.yaml || \
@@ -123,7 +123,7 @@ jobs:
           az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file backend-container.yaml)
 
       # Deploy frontend to Azure Container Instances
-      - name: "Deploy frontend to Azure Container Instances"
+      - name: 'Deploy frontend to Azure Container Instances'
         run: |
           # Try to update first, create if it doesn't exist
           az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file frontend-container.yaml || \
@@ -131,7 +131,7 @@ jobs:
           az container create --resource-group ${{ secrets.RESOURCE_GROUP }} --file frontend-container.yaml)
 
       # Output the URLs of the deployed applications
-      - name: "Show Application URLs"
+      - name: 'Show Application URLs'
         run: |
           echo "Frontend URL: http://ms-challenge-frontend-aci.canadacentral.azurecontainer.io"
           echo "Backend URL: http://ms-challenge-backend-aci.canadacentral.azurecontainer.io:5001"

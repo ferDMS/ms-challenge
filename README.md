@@ -4,10 +4,6 @@
 
 ![Preseting Workable AI](./assets/main_page_rounded.png)
 
-### Experience WorkAble AI firsthand by visiting our live demo below:
-
-### [http://ms-challenge-frontend-aci.canadacentral.azurecontainer.io/](http://ms-challenge-frontend-aci.canadacentral.azurecontainer.io/)
-
 ## Overview
 
 WorkAble AI is an intelligent platform designed to support employment coaches who work with people with disabilities. By leveraging Azure AI services, the system enhances coach productivity, streamlines administrative tasks, and improves job matching outcomes. Our solution addresses the critical challenge faced by supported employment programs: limited resources for job coaches who must simultaneously manage documentation, deliver personalized training, solve emerging problems, and provide motivational support to participants.
